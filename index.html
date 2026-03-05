@@ -1,102 +1,799 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chenghao Yang | GIS Portfolio</title>
 
-  <!-- Leaflet library -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2333;
+      --border: #2a3447;
+      --accent: #4af0a0;
+      --accent2: #1e8fff;
+      --text: #e6edf3;
+      --muted: #7d8fa8;
+      --card-hover: #1e2a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(74,240,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,240,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0;
+      z-index: 1;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      filter: brightness(0.55) saturate(0.8);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 64px 48px;
+      background: linear-gradient(to top, rgba(13,17,23,1) 0%, rgba(13,17,23,0.6) 60%, transparent 100%);
+    }
+
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
+    .hero-name span {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.6s;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.8s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0d1117;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #2de08a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(74,240,160,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 96px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 48px;
+      color: var(--text);
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .project-card {
+      background: var(--surface);
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover {
+      background: var(--card-hover);
+    }
+
+    .project-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .project-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .project-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
+
+    .project-arrow {
+      font-size: 18px;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.2s;
+      margin-top: 8px;
+      align-self: flex-end;
+    }
+
+    .project-card:hover .project-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .project-card.coming-soon {
+      cursor: default;
+    }
+
+    .project-card.coming-soon .project-arrow { display: none; }
+
+    .coming-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 7px;
+      align-self: flex-start;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .skill-group-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .skill-list li {
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-list li::before {
+      content: '▸';
+      color: var(--accent);
+      font-size: 10px;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .about-text p strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 28px 24px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── CONTACT ── */
+    .contact-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .contact-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 48px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LEAFLET OVERRIDES ── */
+    .leaflet-popup-content-wrapper {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .leaflet-popup-tip {
+      background: var(--surface2);
+    }
+
+    .leaflet-popup-content {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .leaflet-popup-content b {
+      font-family: 'Syne', sans-serif;
+      color: var(--accent);
+      font-size: 14px;
+    }
+
+    .leaflet-popup-content a {
+      color: var(--accent2);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .leaflet-popup-content a:hover {
+      text-decoration: underline;
+    }
+
+    .leaflet-container {
+      background: #0d1117;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 64px 24px; }
+      .hero-content { padding: 48px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .contact-bar { padding: 32px 24px; }
+      .divider { margin: 0 24px; }
+      footer { padding: 24px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>Chenghao Yang</h1>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">cy.gis</div>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-<div id="map" style="height:400px;"></div>
+  <!-- HERO + MAP -->
+  <div class="hero">
+    <div id="map"></div>
+    <div class="hero-content">
+      <div class="hero-tag">GIS Specialist · Vancouver, BC</div>
+      <h1 class="hero-name">Chenghao<br><span>Yang</span></h1>
+      <p class="hero-desc">
+        Building spatial systems that turn messy geodata into clear, reliable infrastructure —
+        from LiDAR pipelines to field-to-dashboard workflows.
+      </p>
+      <div class="hero-links">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="mailto:yangchh@pm.me" class="btn btn-outline">yangchh@pm.me</a>
+      </div>
+    </div>
+  </div>
 
-<p>
-GIS Specialist focused on spatial systems, infrastructure monitoring, and geospatial analysis.
-</p>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Work</div>
+    <h2 class="section-title">Featured Projects</h2>
 
-<h2>Featured Projects</h2>
+    <div class="projects-grid">
 
-<ul>
+      <a href="asset-monitoring.html" class="project-card">
+        <div class="project-number">01</div>
+        <div class="project-title">Infrastructure Asset Monitoring System</div>
+        <div class="project-desc">
+          Field-to-office GIS workflow using Survey123 and ArcGIS Dashboards to centralize
+          condition data for 100+ community infrastructure assets in a remote First Nations community.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Survey123</span>
+          <span class="tag">ArcGIS Dashboards</span>
+          <span class="tag">Arcade</span>
+          <span class="tag">ETL</span>
+        </div>
+        <div class="project-arrow">→</div>
+      </a>
 
-<li>
-<b><a href="asset-monitoring.html">
-Indigenous Infrastructure Asset Monitoring System
-</a></b><br>
-Field-to-office GIS workflow using Survey123 and dashboards to monitor 100+ community assets.
-</li>
+      <a href="airport-ols.html" class="project-card">
+        <div class="project-number">02</div>
+        <div class="project-title">Airport OLS Hazard Analysis</div>
+        <div class="project-desc">
+          3D obstacle limitation surface modeling per ICAO Annex 14 standards to identify
+          tree hazards affecting aviation safety at a regional BC airport.
+        </div>
+        <div class="project-tags">
+          <span class="tag">3D Modeling</span>
+          <span class="tag">ICAO Annex 14</span>
+          <span class="tag">ArcGIS Pro</span>
+          <span class="tag">LiDAR</span>
+        </div>
+        <div class="project-arrow">→</div>
+      </a>
 
-<li>
-'<b>Airport OLS Hazard Analysis</b><br>Masset Airport<br><a href="airport-ols.html">View Project</a>'
-3D obstacle limitation surface modeling to identify tree hazards affecting aviation safety.
-</li>
+      <div class="project-card coming-soon">
+        <div class="project-number">03</div>
+        <div class="project-title">Bioregional Atlas Map Series</div>
+        <div class="project-desc">
+          Multi-themed environmental mapping supporting Indigenous consultation processes
+          and executive-level regional planning decisions.
+        </div>
+        <div class="project-tags">
+          <span class="tag">ArcGIS Pro</span>
+          <span class="tag">Map Series</span>
+          <span class="tag">Cartography</span>
+        </div>
+        <div class="coming-badge">Coming soon</div>
+      </div>
 
-<li>
-<b>Bioregional Atlas Map Series</b><br>
-Multi-themed environmental mapping supporting regional planning and consultation.
-</li>
+      <div class="project-card coming-soon">
+        <div class="project-number">04</div>
+        <div class="project-title">Hydrological Terrain Automation</div>
+        <div class="project-desc">
+          LiDAR processing pipeline in R to generate high-res DEMs, stream order extraction,
+          watershed metrics, and volumetric stockpile analysis — fully documented for reproducibility.
+        </div>
+        <div class="project-tags">
+          <span class="tag">R / lidR</span>
+          <span class="tag">LiDAR</span>
+          <span class="tag">Python</span>
+          <span class="tag">Hydrology</span>
+        </div>
+        <div class="coming-badge">Coming soon</div>
+      </div>
 
-<li>
-<b>Hydrological Terrain Automation</b><br>
-Python-based automation for DTM processing, stream order extraction, and watershed analysis.
-</li>
+    </div>
+  </section>
 
-</ul>
+  <div class="divider"></div>
 
-<h2>Services</h2>
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">Technical Skills</h2>
 
-<ul>
-<li>GIS workflow design</li>
-<li>Survey123 implementation</li>
-<li>ArcGIS dashboard development</li>
-<li>Spatial analysis</li>
-<li>GIS automation with Python</li>
-</ul>
+    <div class="skills-grid">
 
-<p>Contact: yangchh@pm.me</p>
+      <div class="skill-group">
+        <div class="skill-group-title">Core GIS</div>
+        <ul class="skill-list">
+          <li>ArcGIS Pro / ArcGIS Online</li>
+          <li>QGIS / SAGA</li>
+          <li>FME (Safe Software)</li>
+          <li>Leaflet.js</li>
+          <li>ENVI</li>
+        </ul>
+      </div>
 
-<!-- Map script -->
-<script>
+      <div class="skill-group">
+        <div class="skill-group-title">Programming</div>
+        <ul class="skill-list">
+          <li>Python (automation, ETL)</li>
+          <li>R (lidR, spatial analysis)</li>
+          <li>Arcade (dashboard logic)</li>
+          <li>ModelBuilder</li>
+          <li>SQL (basic)</li>
+        </ul>
+      </div>
 
-var map = L.map('map').setView([54, -125], 5);
+      <div class="skill-group">
+        <div class="skill-group-title">Data Engineering</div>
+        <ul class="skill-list">
+          <li>Geodatabase schema design</li>
+          <li>CAD-to-GIS transformation</li>
+          <li>ETL pipeline development</li>
+          <li>Metadata standards</li>
+          <li>Version control workflows</li>
+        </ul>
+      </div>
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data © OpenStreetMap contributors'
-}).addTo(map);
+      <div class="skill-group">
+        <div class="skill-group-title">Analysis</div>
+        <ul class="skill-list">
+          <li>LiDAR point cloud processing</li>
+          <li>Terrain & hydrology modeling</li>
+          <li>Volumetric analysis</li>
+          <li>3D surface modeling</li>
+          <li>Remote sensing (ENVI)</li>
+        </ul>
+      </div>
 
-// Hartley Bay – Asset Monitoring
-var hartley = L.marker([53.42, -129.25]).addTo(map);
+    </div>
+  </section>
 
-hartley.bindPopup(
-'<b>Infrastructure Asset Monitoring</b><br>Hartley Bay<br><a href="asset-monitoring.html">View Project</a>'
-);
+  <div class="divider"></div>
 
-// Masset Airport – OLS
-var masset = L.marker([54.01, -132.12]).addTo(map);
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">Background</div>
+    <h2 class="section-title">About</h2>
 
-masset.bindPopup(
-'<b>Airport OLS Hazard Analysis</b><br>Masset Airport<br>Project Page Coming Soon'
-);
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          GIS professional with <strong>6+ years of experience</strong> designing and automating
+          geospatial data workflows. I operate as a one-person GIS department — building data
+          structures, managing spatial datasets, and maintaining the broader technical system.
+        </p>
+        <p>
+          My work sits at the intersection of <strong>spatial data engineering</strong> and applied
+          analysis. I'm interested in building systems that scale — not just producing outputs,
+          but designing the infrastructure that makes good spatial decisions repeatable.
+        </p>
+        <p>
+          MSc in Geomatics for Environmental Management (UBC) and BSc in Environmental Science
+          with a GIS Certificate (SFU). Currently a G.I.T. Applicant and drone pilot (basic).
+        </p>
+      </div>
 
-// Haida Gwaii / Homalco – Bioregional Atlas
-var atlas = L.marker([53.5, -132.0]).addTo(map);
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-value">6+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">100+</div>
+          <div class="stat-label">Assets Monitored</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">MSc</div>
+          <div class="stat-label">UBC Geomatics</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">G.I.T</div>
+          <div class="stat-label">Applicant 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-atlas.bindPopup(
-'<b>Bioregional Atlas</b><br>Haida Gwaii & Homalco First Nation<br>Project Page Coming Soon'
-);
+  <div class="divider"></div>
 
-// Auto zoom to projects
-map.fitBounds([
-[53.42, -129.25],
-[54.01, -132.12],
-[53.5, -132.0]
-]);
-</script>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-bar">
+      <div class="contact-text">Let's work together.</div>
+      <div class="contact-links">
+        <a href="mailto:yangchh@pm.me" class="btn btn-primary">yangchh@pm.me</a>
+        <a href="https://github.com" class="btn btn-outline" target="_blank">GitHub</a>
+        <a href="https://linkedin.com" class="btn btn-outline" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Chenghao Yang · Vancouver, BC · Built with GitHub Pages
+  </footer>
+
+  <!-- MAP SCRIPT -->
+  <script>
+    var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([54, -130], 6);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    var icon = L.divIcon({
+      className: '',
+      html: '<div style="width:10px;height:10px;background:#4af0a0;border-radius:50%;border:2px solid #0d1117;box-shadow:0 0 12px rgba(74,240,160,0.8);"></div>',
+      iconSize: [10, 10],
+      iconAnchor: [5, 5]
+    });
+
+    var hartley = L.marker([53.42, -129.25], { icon }).addTo(map);
+    hartley.bindPopup('<b>Infrastructure Asset Monitoring</b><br>Hartley Bay, BC<br><a href="asset-monitoring.html">→ View Project</a>');
+
+    var masset = L.marker([54.01, -132.12], { icon }).addTo(map);
+    masset.bindPopup('<b>Airport OLS Hazard Analysis</b><br>Masset Airport, Haida Gwaii<br><a href="airport-ols.html">→ View Project</a>');
+
+    var atlas = L.marker([53.5, -132.0], { icon }).addTo(map);
+    atlas.bindPopup('<b>Bioregional Atlas</b><br>Haida Gwaii & Homalco First Nation<br><span style="color:#7d8fa8;font-size:11px;font-family:DM Mono,monospace;">Coming soon</span>');
+
+    map.fitBounds([
+      [53.42, -129.25],
+      [54.01, -132.12],
+      [53.5,  -132.0]
+    ], { padding: [80, 80] });
+
+    map.scrollWheelZoom.disable();
+  </script>
 
 </body>
 </html>

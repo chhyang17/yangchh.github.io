@@ -1,66 +1,501 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asset Monitoring System | Chenghao Yang</title>
 
-<title>Infrastructure Asset Monitoring System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-<style>
-.back-button {
-  display: inline-block;
-  padding: 10px 16px;
-  margin-bottom: 20px;
-  background-color: #2c7be5;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-family: Arial, sans-serif;
-}
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2333;
+      --border: #2a3447;
+      --accent: #4af0a0;
+      --accent2: #1e8fff;
+      --text: #e6edf3;
+      --muted: #7d8fa8;
+    }
 
-.back-button:hover {
-  background-color: #1a5fb4;
-}
-</style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(74,240,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,240,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(13,17,23,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .case-hero {
+      position: relative;
+      z-index: 1;
+      padding: 160px 48px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .case-meta {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .case-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .case-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .case-title span { color: var(--accent); }
+
+    .case-summary {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.8;
+    }
+
+    /* ── CONTENT ── */
+    .case-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 48px 96px;
+    }
+
+    /* ── PHASE BLOCKS ── */
+    .phase {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 48px;
+      padding: 64px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .phase:last-child { border-bottom: none; }
+
+    .phase-label-col {
+      padding-top: 4px;
+    }
+
+    .phase-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .phase-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      position: relative;
+    }
+
+    .phase-name::after {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      margin-top: 12px;
+    }
+
+    .phase-body {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .phase-body p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    .phase-body p strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 20px 24px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .callout strong {
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* ── OUTCOME STATS ── */
+    .outcome-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .outcome-stat {
+      background: var(--surface);
+      padding: 28px 24px;
+    }
+
+    .outcome-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .outcome-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    /* ── TECH STACK ── */
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tech-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── NAV BETWEEN PROJECTS ── */
+    .case-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 48px;
+      border-top: 1px solid var(--border);
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .case-nav a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .case-nav a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .case-hero { padding: 120px 24px 64px; }
+      .case-content { padding: 0 24px 64px; }
+      .phase { grid-template-columns: 1fr; gap: 24px; }
+      .phase-name::after { display: none; }
+      .outcome-stats { grid-template-columns: 1fr; }
+      .case-nav { padding: 32px 24px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<a href="index.html" class="back-button">← Back to Home</a>
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">cy.gis</a>
+    <a href="index.html" class="nav-back">← All Projects</a>
+  </nav>
 
-<h1>Infrastructure Asset Monitoring System</h1>
+  <!-- HERO -->
+  <div class="case-hero">
+    <div class="case-number">Project 01</div>
+    <h1 class="case-title">Infrastructure Asset<br><span>Monitoring System</span></h1>
+    <p class="case-summary">
+      Designing a field-to-office GIS workflow to centralize infrastructure condition data
+      across a remote First Nations community — replacing scattered spreadsheets with a
+      real-time monitoring platform.
+    </p>
 
-<h2>Overview</h2>
-<p>
-Designed a field-to-office GIS workflow to monitor infrastructure assets in a remote Indigenous community.
-The system centralized asset condition data and enabled near real-time monitoring.
-</p>
+    <div class="case-meta" style="margin-top: 40px;">
+      <div class="meta-item">
+        <span class="meta-label">Domain</span>
+        <span class="meta-value">Indigenous Infrastructure</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Scale</span>
+        <span class="meta-value">100+ Assets</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Role</span>
+        <span class="meta-value">GIS Specialist</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Status</span>
+        <span class="meta-value">Deployed</span>
+      </div>
+    </div>
+  </div>
 
-<h2>Context</h2>
-<p>
-Infrastructure assets in the community included buildings, water systems, wastewater systems,
-boardwalk roads, utilities, fuel storage, and electrical infrastructure. Asset assessments
-were conducted by visiting engineers as part of a federal reporting program.
-</p>
+  <!-- CONTENT -->
+  <div class="case-content">
 
-<h2>Challenge</h2>
-<p>
-Before the system was implemented, asset data was scattered across reports and spreadsheets.
-There was no centralized GIS database or consistent workflow to track asset conditions.
-</p>
+    <!-- CONTEXT -->
+    <div class="phase">
+      <div class="phase-label-col">
+        <div class="phase-num">00</div>
+        <div class="phase-name">Context</div>
+      </div>
+      <div class="phase-body">
+        <p>
+          Infrastructure assets in a remote Indigenous community — including buildings, water and
+          wastewater systems, boardwalk roads, utilities, fuel storage, and electrical infrastructure —
+          required regular condition assessments as part of a <strong>federal reporting program</strong>.
+        </p>
+        <p>
+          Assessments were conducted by visiting engineers on an infrequent basis. Between visits,
+          there was no system in place to track asset conditions, changes, or maintenance status
+          in a consistent or accessible way.
+        </p>
+      </div>
+    </div>
 
-<h2>Approach</h2>
-<p>
-A GIS workflow was developed using Survey123 for standardized field data collection.
-A centralized asset database schema was designed based on the ACRS reporting framework,
-and ArcGIS Dashboards were created to visualize infrastructure condition data.
-</p>
+    <!-- PROBLEM -->
+    <div class="phase">
+      <div class="phase-label-col">
+        <div class="phase-num">01</div>
+        <div class="phase-name">Problem</div>
+      </div>
+      <div class="phase-body">
+        <p>
+          Asset data was distributed across engineering reports, spreadsheets, and institutional memory —
+          with no centralized GIS database and no consistent workflow for tracking changes over time.
+        </p>
+        <div class="callout">
+          <strong>Core gap</strong>
+          No single source of truth for asset condition data meant decision-makers couldn't
+          access current status, prioritize interventions, or produce consistent federal reports
+          without manually reconciling fragmented records.
+        </div>
+        <p>
+          The lack of spatial context also made it difficult to communicate asset status to
+          non-technical stakeholders or to identify patterns across asset categories and locations.
+        </p>
+      </div>
+    </div>
 
-<h2>Outcome</h2>
-<p>
-The system established a centralized asset monitoring platform covering over 100 infrastructure assets.
-The workflow improved data consistency and enabled faster access to asset condition information.
-</p>
+    <!-- APPROACH -->
+    <div class="phase">
+      <div class="phase-label-col">
+        <div class="phase-num">02</div>
+        <div class="phase-name">Approach</div>
+      </div>
+      <div class="phase-body">
+        <p>
+          The solution was structured around three components: <strong>standardized data collection</strong>,
+          a <strong>centralized geodatabase</strong>, and a <strong>real-time visualization layer</strong>.
+        </p>
+        <p>
+          A <strong>Survey123</strong> form was built to standardize field data collection by visiting engineers —
+          capturing asset type, condition rating, notes, and photos in a structured format aligned
+          to the ACRS reporting framework.
+        </p>
+        <p>
+          A <strong>geodatabase schema</strong> was designed with domains and subtypes to enforce
+          data integrity and ensure consistency across asset categories. This schema became the
+          single source of truth feeding all downstream reporting.
+        </p>
+        <p>
+          <strong>ArcGIS Dashboards</strong> with Arcade expressions were built on top of the
+          live database — providing condition overviews, asset-level drill-downs, and visual
+          summaries accessible to both field staff and program managers.
+        </p>
+
+        <div class="tech-stack">
+          <span class="tech-pill">ArcGIS Survey123</span>
+          <span class="tech-pill">ArcGIS Online</span>
+          <span class="tech-pill">ArcGIS Dashboards</span>
+          <span class="tech-pill">Arcade</span>
+          <span class="tech-pill">Geodatabase Schema Design</span>
+          <span class="tech-pill">ACRS Framework</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTCOME -->
+    <div class="phase">
+      <div class="phase-label-col">
+        <div class="phase-num">03</div>
+        <div class="phase-name">Outcome</div>
+      </div>
+      <div class="phase-body">
+
+        <div class="outcome-stats">
+          <div class="outcome-stat">
+            <div class="outcome-value">100+</div>
+            <div class="outcome-label">Assets centralized in one platform</div>
+          </div>
+          <div class="outcome-stat">
+            <div class="outcome-value">↓</div>
+            <div class="outcome-label">Manual reconciliation eliminated</div>
+          </div>
+          <div class="outcome-stat">
+            <div class="outcome-value">Live</div>
+            <div class="outcome-label">Real-time condition visibility</div>
+          </div>
+        </div>
+
+        <p>
+          The system established a centralized monitoring platform where all asset condition data
+          flows from the field directly into a structured geodatabase, surfaced through dashboards
+          that any stakeholder can access without GIS expertise.
+        </p>
+        <p>
+          The standardized schema also made federal reporting significantly faster — data
+          no longer needed to be manually compiled from disparate sources before each submission cycle.
+        </p>
+        <div class="callout">
+          <strong>Transferable design</strong>
+          The schema and workflow were designed to be replicable across similar communities
+          participating in the same federal reporting program — not just a one-off solution.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROJECT NAV -->
+  <div class="case-nav">
+    <a href="index.html">← Back to Projects</a>
+    <a href="airport-ols.html">Airport OLS Analysis →</a>
+  </div>
 
 </body>
 </html>
