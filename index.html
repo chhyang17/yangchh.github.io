@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Chenghao Yang | GIS Portfolio</title>
+
+  <!-- Leaflet library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 
 <body>
 
 <h1>Chenghao Yang</h1>
+
+<div id="map" style="height:400px;"></div>
 
 <p>
 GIS Specialist focused on spatial systems, infrastructure monitoring, and geospatial analysis.
@@ -15,6 +23,7 @@ GIS Specialist focused on spatial systems, infrastructure monitoring, and geospa
 <h2>Featured Projects</h2>
 
 <ul>
+
 <li>
 <b><a href="asset-monitoring.html">
 Indigenous Infrastructure Asset Monitoring System
@@ -50,6 +59,21 @@ Python-based automation for DTM processing, stream order extraction, and watersh
 </ul>
 
 <p>Contact: yangchh@pm.me</p>
+
+<!-- Map script -->
+<script>
+
+var map = L.map('map').setView([54, -125], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data © OpenStreetMap contributors'
+}).addTo(map);
+
+var marker = L.marker([54, -125]).addTo(map);
+
+marker.bindPopup("GIS Projects in Western Canada");
+
+</script>
 
 </body>
 </html>
