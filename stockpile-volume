@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stockpile Volume Estimation | Chenghao Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#2a3447;--accent:#4af0a0;--accent2:#1e8fff;--text:#e6edf3;--muted:#7d8fa8; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,240,160,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(74,240,160,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(13,17,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.05em;text-decoration:none;}
+    .nav-back{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+    .nav-back:hover{color:var(--accent);}
+    .case-hero{position:relative;z-index:1;padding:160px 48px 80px;max-width:900px;margin:0 auto;border-bottom:1px solid var(--border);}
+    .case-meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:40px;}
+    .meta-item{display:flex;flex-direction:column;gap:4px;}
+    .meta-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;}
+    .meta-value{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);}
+    .case-number{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;}
+    .case-title{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:24px;padding-bottom:6px;}
+    .case-title span{color:var(--accent);}
+    .case-summary{font-size:17px;color:var(--muted);max-width:640px;line-height:1.8;}
+    .case-content{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 48px 96px;}
+    .phase{display:grid;grid-template-columns:200px 1fr;gap:48px;padding:64px 0;border-bottom:1px solid var(--border);}
+    .phase:last-child{border-bottom:none;}
+    .phase-label-col{padding-top:4px;}
+    .phase-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;}
+    .phase-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1.2;position:relative;}
+    .phase-name::after{content:'';display:block;width:24px;height:2px;background:var(--accent);margin-top:12px;}
+    .phase-body{display:flex;flex-direction:column;gap:20px;}
+    .phase-body p{font-size:15px;color:var(--muted);line-height:1.85;}
+    .phase-body p strong{color:var(--text);font-weight:500;}
+    .callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:20px 24px;font-size:14px;color:var(--muted);line-height:1.7;}
+    .callout strong{color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px;}
+    .outcome-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:8px;}
+    .outcome-stat{background:var(--surface);padding:28px 24px;}
+    .outcome-value{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:6px;}
+    .outcome-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;line-height:1.5;}
+    .tech-stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+    .tech-pill{font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border-radius:4px;background:var(--surface2);color:var(--text);border:1px solid var(--border);letter-spacing:0.04em;}
+    .phase-subtitle{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;}
+    .phase-divider{height:1px;background:var(--border);margin:8px 0 28px;}
+    .case-nav{display:flex;justify-content:space-between;align-items:center;padding:48px;border-top:1px solid var(--border);max-width:900px;margin:0 auto;position:relative;z-index:1;}
+    .case-nav a{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+    .case-nav a:hover{color:var(--accent);}
+    @media(max-width:768px){
+      nav{padding:16px 24px;}
+      .case-hero{padding:120px 24px 64px;}
+      .case-content{padding:0 24px 64px;}
+      .phase{grid-template-columns:1fr;gap:24px;}
+      .phase-name::after{display:none;}
+      .outcome-stats{grid-template-columns:1fr;}
+      .case-nav{padding:32px 24px;}
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">cy.gis</a>
+    <a href="index.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="case-hero">
+    <div class="case-number">Project 05</div>
+    <h1 class="case-title">Stockpile Volume<br><span>Estimation</span></h1>
+    <p class="case-summary">
+      Developing a spatial volume estimation workflow for quarry stockpiles using both
+      LiDAR point clouds and drone-derived photogrammetric surfaces — producing accurate,
+      auditable volume calculations to support inventory reporting and operational planning.
+    </p>
+    <div class="case-meta">
+      <div class="meta-item"><span class="meta-label">Domain</span><span class="meta-value">Quarry / Resource</span></div>
+      <div class="meta-item"><span class="meta-label">Input</span><span class="meta-value">LiDAR + Drone SfM</span></div>
+      <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">GIS Specialist</span></div>
+      <div class="meta-item"><span class="meta-label">Output</span><span class="meta-value">Volume Reports</span></div>
+    </div>
+  </div>
+
+  <div class="case-content">
+
+    <div class="phase">
+      <div class="phase-label-col"><div class="phase-num">00</div><div class="phase-name">Context</div></div>
+      <div class="phase-body">
+        <p>Quarry operations require regular <strong>stockpile inventory assessments</strong> — accurate
+        volume estimates for aggregate piles are needed for production reporting, royalty calculations,
+        and operational planning. Traditional survey methods are time-consuming and difficult to
+        scale across multiple stockpile areas simultaneously.</p>
+        <p>This project developed a repeatable GIS-based workflow to compute stockpile volumes
+        from two types of high-resolution elevation data: <strong>aerial LiDAR</strong> for
+        large-area coverage and <strong>drone photogrammetry (SfM)</strong> for targeted,
+        high-frequency monitoring of individual piles.</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label-col"><div class="phase-num">01</div><div class="phase-name">Problem</div></div>
+      <div class="phase-body">
+        <p>Stockpile volumes were previously estimated using manual survey stakes and tape measurements —
+        a method that was slow, weather-dependent, and produced results that varied significantly
+        depending on who conducted the survey and which measurement points they chose.</p>
+        <div class="callout">
+          <strong>Accuracy and auditability gap</strong>
+          For royalty and compliance reporting, volume estimates need to be defensible and
+          methodologically consistent across time periods. Manual tape surveys couldn't
+          provide either — results weren't reproducible and left no spatial audit trail.
+        </div>
+        <p>There was also no baseline surface available to compute volumes against — meaning
+        the first step was establishing a reliable <strong>pre-stockpile reference surface</strong>
+        from which to measure accumulation.</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label-col"><div class="phase-num">02</div><div class="phase-name">Approach</div></div>
+      <div class="phase-body">
+        <p>A <strong>reference DTM</strong> representing the pre-stockpile ground surface was
+        generated from LiDAR ground returns and used as the base surface for all volume calculations.
+        Stockpile boundary polygons were digitized from imagery and LiDAR intensity data to
+        define the calculation extents precisely.</p>
+        <p>For <strong>LiDAR-based volumes</strong>, the DSM within each stockpile boundary was
+        differenced against the reference DTM. The resulting cut-fill volume was integrated
+        using raster cell area — producing volumetric estimates in cubic metres with
+        full spatial traceability.</p>
+        <p>For <strong>drone SfM surveys</strong>, point clouds generated from photogrammetric
+        processing were co-registered to the LiDAR coordinate system, then processed through
+        the same differencing workflow — ensuring consistency between the two data sources
+        and enabling change detection between survey periods.</p>
+        <div class="tech-stack">
+          <span class="tech-pill">LiDAR</span>
+          <span class="tech-pill">Drone / SfM Photogrammetry</span>
+          <span class="tech-pill">DSM / DTM Differencing</span>
+          <span class="tech-pill">ArcGIS Pro</span>
+          <span class="tech-pill">R / lidR</span>
+          <span class="tech-pill">Cut-Fill Analysis</span>
+          <span class="tech-pill">Point Cloud Co-registration</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label-col"><div class="phase-num">03</div><div class="phase-name">Outcome</div></div>
+      <div class="phase-body">
+        <div class="outcome-stats">
+          <div class="outcome-stat"><div class="outcome-value">2</div><div class="outcome-label">Data sources — LiDAR &amp; drone SfM</div></div>
+          <div class="outcome-stat"><div class="outcome-value">m³</div><div class="outcome-label">Per-pile volume with audit trail</div></div>
+          <div class="outcome-stat"><div class="outcome-value">↻</div><div class="outcome-label">Repeatable across survey periods</div></div>
+        </div>
+        <p>The workflow replaced manual tape surveys with a spatially explicit, reproducible
+        process that produces volume estimates traceable to specific elevation surfaces and
+        boundary polygons. Results are directly usable for compliance reporting without
+        additional reconciliation.</p>
+        <p>Using both LiDAR and drone data within the same workflow also provided a practical
+        model for <strong>tiered monitoring</strong> — LiDAR for periodic large-area snapshots,
+        drone surveys for frequent targeted updates between LiDAR acquisitions.</p>
+        <div class="callout">
+          <strong>Dual-source advantage</strong>
+          Co-registering drone SfM and LiDAR to the same coordinate reference meant change
+          detection between any two survey periods was consistent regardless of which platform
+          collected the data — a significant improvement for long-term inventory tracking.
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="case-nav">
+    <a href="hydro-terrain.html">← Terrain & Hydrology</a>
+    <a href="etl-geodatabase.html">Geospatial ETL →</a>
+  </div>
+</body>
+</html>
