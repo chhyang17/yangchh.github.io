@@ -1,18 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Airport OLS & Hazard Tree Analysis | Chenghao Yang</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#2a3447;--accent:#4af0a0;--accent2:#1e8fff;--text:#e6edf3;--muted:#7d8fa8; }
+    :root { --bg:#0f0c0a;--surface:#1a1410;--surface2:#241a14;--border:#3d2318;--accent:#e85d3a;--accent2:#f0a060;--text:#f5ede8;--muted:#9a7a6e; }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;}
-    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,240,160,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(74,240,160,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(13,17,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,93,58,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,93,58,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(15,12,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
     .nav-logo{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.05em;text-decoration:none;}
     .nav-back{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
     .nav-back:hover{color:var(--accent);}
@@ -57,6 +58,51 @@
       .outcome-stats{grid-template-columns:1fr;}
       .case-nav{padding:32px 24px;}
     }
+
+    /* ── PROJECT MAP ── */
+    .project-map-section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .map-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-top: 48px;
+    }
+    .map-label span {
+      color: var(--accent);
+      margin-left: 8px;
+    }
+    .project-map-container {
+      width: 100%;
+      height: 340px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+    .leaflet-popup-content-wrapper {
+      background: var(--surface2, #241a14);
+      color: var(--text, #f5ede8);
+      border: 1px solid var(--border, #3d2318);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .leaflet-popup-tip { background: var(--surface2, #241a14); }
+    .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 12px; line-height: 1.6; }
+    .leaflet-popup-content b { font-family: 'Syne', sans-serif; color: #e85d3a; }
+    @media(max-width:768px){
+      .project-map-section { padding: 0 24px 0; }
+      .project-map-container { height: 260px; }
+    }
   </style>
 </head>
 <body>
@@ -79,6 +125,13 @@
       <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">GIS Specialist</span></div>
       <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Northern BC</span></div>
     </div>
+  </div>
+
+
+  <!-- PROJECT MAP -->
+  <div class="project-map-section">
+    <div class="map-label">Spatial Context <span>// OLS Surface Model</span></div>
+    <div class="project-map-container" id="map-airport"></div>
   </div>
 
   <div class="case-content">
@@ -207,5 +260,88 @@
     <a href="asset-monitoring.html">← Asset Monitoring</a>
     <a href="bioregional-atlas.html">Bioregional Atlas →</a>
   </div>
+
+  <script>
+  (function(){
+    var m = L.map('map-airport', { zoomControl: false, attributionControl: false, scrollWheelZoom: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      { maxZoom: 19, subdomains: 'abcd' }).addTo(m);
+    m.setView([54.015, -132.125], 14);
+
+    // Runway — oriented roughly NW-SE
+    var rwyCx = 54.015, rwyCy = -132.125;
+    // Runway strip (60m wide, 1800m long approx in degrees)
+    var rwyLen = 0.010, rwyWid = 0.0005;
+    L.polygon([
+      [rwyCx - rwyLen, rwyCy - rwyWid],
+      [rwyCx + rwyLen, rwyCy - rwyWid],
+      [rwyCx + rwyLen, rwyCy + rwyWid],
+      [rwyCx - rwyLen, rwyCy + rwyWid]
+    ], { color: '#c8b89a', fillColor: '#3a3028', fillOpacity: 0.9, weight: 2 })
+      .addTo(m).bindPopup('<b>Runway Strip</b>');
+
+    // Centreline
+    L.polyline([[rwyCx - rwyLen, rwyCy],[rwyCx + rwyLen, rwyCy]],
+      { color: '#f5ede8', weight: 1, opacity: 0.6, dashArray: '8,8' }).addTo(m);
+
+    var base = { fillOpacity: 0.12, weight: 1 };
+
+    // Approach surfaces (both ends — trapezoids extending outward)
+    L.polygon([
+      [rwyCx - rwyLen, rwyCy - rwyWid],
+      [rwyCx - rwyLen, rwyCy + rwyWid],
+      [rwyCx - rwyLen - 0.028, rwyCy + 0.008],
+      [rwyCx - rwyLen - 0.028, rwyCy - 0.008]
+    ], Object.assign({}, base, { color:'#e85d3a', fillColor:'#e85d3a' }))
+      .addTo(m).bindPopup('<b>Approach Surface</b><br>ICAO Annex 14 — Threshold end 1');
+
+    L.polygon([
+      [rwyCx + rwyLen, rwyCy - rwyWid],
+      [rwyCx + rwyLen, rwyCy + rwyWid],
+      [rwyCx + rwyLen + 0.028, rwyCy + 0.008],
+      [rwyCx + rwyLen + 0.028, rwyCy - 0.008]
+    ], Object.assign({}, base, { color:'#e85d3a', fillColor:'#e85d3a' }))
+      .addTo(m).bindPopup('<b>Approach Surface</b><br>ICAO Annex 14 — Threshold end 2');
+
+    // Transitional surfaces (sides of runway)
+    L.polygon([
+      [rwyCx - rwyLen, rwyCy - rwyWid],
+      [rwyCx + rwyLen, rwyCy - rwyWid],
+      [rwyCx + rwyLen, rwyCy - 0.006],
+      [rwyCx - rwyLen, rwyCy - 0.006]
+    ], Object.assign({}, base, { color:'#f0a060', fillColor:'#f0a060' }))
+      .addTo(m).bindPopup('<b>Transitional Surface</b>');
+
+    L.polygon([
+      [rwyCx - rwyLen, rwyCy + rwyWid],
+      [rwyCx + rwyLen, rwyCy + rwyWid],
+      [rwyCx + rwyLen, rwyCy + 0.006],
+      [rwyCx - rwyLen, rwyCy + 0.006]
+    ], Object.assign({}, base, { color:'#f0a060', fillColor:'#f0a060' }))
+      .addTo(m).bindPopup('<b>Transitional Surface</b>');
+
+    // Inner Horizontal Surface (oval/circle around airport)
+    L.circle([rwyCx, rwyCy], {
+      radius: 2000, color: '#6dbf8a', fillColor: '#6dbf8a',
+      fillOpacity: 0.07, weight: 1.5, dashArray: '4,4'
+    }).addTo(m).bindPopup('<b>Inner Horizontal Surface</b><br>45m elevation limit');
+
+    // Conical surface (slightly larger)
+    L.circle([rwyCx, rwyCy], {
+      radius: 3500, color: '#5b9bd5', fillColor: '#5b9bd5',
+      fillOpacity: 0.05, weight: 1, dashArray: '2,6'
+    }).addTo(m).bindPopup('<b>Conical Surface</b>');
+
+    // Hazard tree markers
+    [[54.018,-132.130],[54.012,-132.119],[54.020,-132.122],[54.011,-132.131]].forEach(function(pt){
+      L.circleMarker(pt, { radius: 5, color: '#e85d3a', fillColor: '#e85d3a',
+        fillOpacity: 0.9, weight: 1 }).addTo(m)
+        .bindPopup('<b>Hazard Tree</b><br>OLS penetration detected');
+    });
+
+    m.invalidateSize();
+  })();
+  </script>
+
 </body>
 </html>
