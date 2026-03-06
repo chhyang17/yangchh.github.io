@@ -5,19 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asset Monitoring System | Chenghao Yang</title>
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #1c2333;
-      --border: #2a3447;
-      --accent: #4af0a0;
-      --accent2: #1e8fff;
-      --text: #e6edf3;
-      --muted: #7d8fa8;
+      --bg: #0f0c0a;
+      --surface: #1a1410;
+      --surface2: #241a14;
+      --border: #3d2318;
+      --accent: #e85d3a;
+      --accent2: #f0a060;
+      --text: #f5ede8;
+      --muted: #9a7a6e;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,8 +37,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(74,240,160,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(74,240,160,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(232,93,58,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,93,58,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -51,7 +53,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 18px 48px;
-      background: rgba(13,17,23,0.9);
+      background: rgba(15,12,10,0.92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
@@ -323,6 +325,52 @@
       .outcome-stats { grid-template-columns: 1fr; }
       .case-nav { padding: 32px 24px; }
     }
+
+    /* ── PROJECT MAP ── */
+    .project-map-section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .map-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-top: 48px;
+    }
+    .map-label span {
+      color: var(--accent);
+      margin-left: 8px;
+    }
+    .project-map-container {
+      width: 100%;
+      height: 420px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 48px;
+      position: relative;
+    }
+    .leaflet-popup-content-wrapper {
+      background: var(--surface2, #241a14);
+      color: var(--text, #f5ede8);
+      border: 1px solid var(--border, #3d2318);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .leaflet-popup-tip { background: var(--surface2, #241a14); }
+    .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 12px; line-height: 1.6; }
+    .leaflet-popup-content b { font-family: 'Syne', sans-serif; color: #e85d3a; }
+    @media(max-width:768px){
+      .project-map-section { padding: 0 24px 0; }
+      .project-map-container { height: 260px; }
+    }
   </style>
 </head>
 
@@ -365,6 +413,13 @@
   </div>
 
   <!-- CONTENT -->
+
+  <!-- PROJECT MAP -->
+  <div class="project-map-section">
+    <div class="map-label">Spatial Context <span>// Asset Coverage</span></div>
+    <div class="project-map-container" id="map-asset"></div>
+  </div>
+
   <div class="case-content">
 
     <!-- CONTEXT -->
@@ -496,6 +551,159 @@
     <a href="index.html">← Back to Projects</a>
     <a href="airport-ols.html">Airport OLS Analysis →</a>
   </div>
+
+
+  <script>
+  (function(){
+    // ── Hartley Bay, BC — 53.4185°N, 129.2535°W ──
+    var CENTER = [53.4185, -129.2535];
+    var ZOOM   = 17;
+
+    var m = L.map('map-asset', {
+      zoomControl: true,
+      attributionControl: false,
+      scrollWheelZoom: false
+    });
+
+    // Dark basemap
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19, subdomains: 'abcd'
+    }).addTo(m);
+
+    m.setView(CENTER, ZOOM);
+
+    // ── Colour palette ──
+    var C = {
+      building:  '#e85d3a',   // accent red
+      road:      '#f0a060',   // amber
+      water:     '#5b9bd5',   // blue
+      power:     '#6dbf8a',   // green
+      pier:      '#c8a87a',   // tan
+      landuse:   '#9a7a6e',   // muted brown
+    };
+
+    // ── Helper: OSM nodes → [lat,lng] array ──
+    function nodeCoords(nodeMap, refs) {
+      return refs
+        .map(function(id){ return nodeMap[id]; })
+        .filter(Boolean);
+    }
+
+    // ── Style by OSM tag ──
+    function styleForWay(tags) {
+      if (tags.building)            return { color: C.building, fillColor: C.building, fillOpacity: 0.35, weight: 1.5 };
+      if (tags.highway)             return { color: C.road,     weight: tags.highway === 'footway' ? 1.5 : 2.5, opacity: 0.85, fill: false, dashArray: tags.highway === 'footway' ? '4,4' : null };
+      if (tags.waterway || tags.natural === 'water') return { color: C.water, fillColor: C.water, fillOpacity: 0.3, weight: 1.5 };
+      if (tags.power)               return { color: C.power,   weight: 1.5, opacity: 0.8, fill: false, dashArray: '3,5' };
+      if (tags.man_made === 'pier') return { color: C.pier,    fillColor: C.pier, fillOpacity: 0.4, weight: 2 };
+      if (tags.landuse || tags.leisure) return { color: C.landuse, fillColor: C.landuse, fillOpacity: 0.12, weight: 1, dashArray: '4,4' };
+      return { color: '#9a7a6e', fillOpacity: 0.1, weight: 1 };
+    }
+
+    // ── Popup label ──
+    function labelForTags(tags) {
+      if (tags.building)   return '<b>' + (tags.name || 'Building') + '</b><br><span style="color:#9a7a6e;font-size:11px;">' + (tags.building !== 'yes' ? tags.building : 'structure') + '</span>';
+      if (tags.highway)    return '<b>' + (tags.name || 'Road / Path') + '</b><br><span style="color:#9a7a6e;font-size:11px;">highway: ' + tags.highway + '</span>';
+      if (tags.waterway)   return '<b>' + (tags.name || 'Waterway') + '</b><br><span style="color:#9a7a6e;font-size:11px;">' + tags.waterway + '</span>';
+      if (tags.natural === 'water') return '<b>' + (tags.name || 'Water body') + '</b>';
+      if (tags.power)      return '<b>Power Line</b><br><span style="color:#9a7a6e;font-size:11px;">power: ' + tags.power + '</span>';
+      if (tags.man_made === 'pier') return '<b>Pier / Dock</b>';
+      if (tags.landuse)    return '<b>Land Use</b><br><span style="color:#9a7a6e;font-size:11px;">' + tags.landuse + '</span>';
+      return '<b>Feature</b>';
+    }
+
+    // ── Overpass query — fetch all map features within ~500m of centre ──
+    var bbox = '53.410,-129.265,53.430,-129.244';
+    var query = '[out:json][timeout:25];('
+      + 'way["building"](' + bbox + ');'
+      + 'way["highway"](' + bbox + ');'
+      + 'way["waterway"](' + bbox + ');'
+      + 'way["natural"="water"](' + bbox + ');'
+      + 'way["power"](' + bbox + ');'
+      + 'way["man_made"="pier"](' + bbox + ');'
+      + 'way["landuse"](' + bbox + ');'
+      + 'way["leisure"](' + bbox + ');'
+      + ');out body;>;out skel qt;';
+
+    var url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+
+    // Loading indicator
+    var loadingDiv = document.createElement('div');
+    loadingDiv.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,12,10,0.7);z-index:999;font-family:monospace;font-size:12px;color:#9a7a6e;letter-spacing:0.1em;';
+    loadingDiv.textContent = 'Loading OSM data…';
+    document.getElementById('map-asset').appendChild(loadingDiv);
+
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        loadingDiv.remove();
+
+        // Build node lookup
+        var nodes = {};
+        data.elements.forEach(function(el){
+          if (el.type === 'node') nodes[el.id] = [el.lat, el.lon];
+        });
+
+        var counts = { building:0, highway:0, water:0, power:0, pier:0, other:0 };
+
+        data.elements.forEach(function(el){
+          if (el.type !== 'way') return;
+          var tags = el.tags || {};
+          var coords = nodeCoords(nodes, el.nodes || []);
+          if (coords.length < 2) return;
+
+          var sty = styleForWay(tags);
+          var label = labelForTags(tags);
+          var layer;
+
+          // Closed ways with area tags → polygon; open ways → polyline
+          var isClosed = el.nodes[0] === el.nodes[el.nodes.length-1];
+          var isArea = tags.building || tags.natural === 'water' || tags.landuse || tags.leisure || tags.man_made === 'pier' || tags.waterway === 'riverbank';
+
+          if (isClosed && isArea) {
+            layer = L.polygon(coords, sty);
+          } else {
+            layer = L.polyline(coords, sty);
+          }
+
+          layer.addTo(m).bindPopup(label);
+
+          if (tags.building) counts.building++;
+          else if (tags.highway) counts.highway++;
+          else if (tags.waterway || tags.natural==='water') counts.water++;
+          else if (tags.power) counts.power++;
+          else if (tags.man_made==='pier') counts.pier++;
+          else counts.other++;
+        });
+
+        console.log('OSM features loaded:', counts);
+
+        // Legend
+        var legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function() {
+          var div = L.DomUtil.create('div');
+          div.style.cssText = 'background:rgba(26,20,16,0.92);border:1px solid #3d2318;border-radius:6px;padding:10px 14px;font-family:monospace;font-size:10px;line-height:1.9;letter-spacing:0.06em;';
+          div.innerHTML = [
+            '<div style="color:#9a7a6e;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:4px;">ASSET TYPES</div>',
+            '<div><span style="color:#e85d3a">■</span> Buildings (' + counts.building + ')</div>',
+            '<div><span style="color:#f0a060">─</span> Roads & Paths</div>',
+            '<div><span style="color:#5b9bd5">■</span> Water</div>',
+            '<div><span style="color:#6dbf8a">╌</span> Power Lines</div>',
+            '<div><span style="color:#c8a87a">■</span> Piers / Docks</div>',
+          ].join('');
+          return div;
+        };
+        legend.addTo(m);
+      })
+      .catch(function(err) {
+        loadingDiv.style.color = '#e85d3a';
+        loadingDiv.textContent = 'Could not load OSM data — check connection.';
+        console.error('Overpass error:', err);
+      });
+
+    setTimeout(function(){ m.invalidateSize(); }, 300);
+  })();
+  </script>
 
 </body>
 </html>
