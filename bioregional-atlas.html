@@ -207,6 +207,20 @@
       #bc-map{height:300px;}
       .decision-grid{grid-template-columns:1fr;}
     }
+    /* identify popup */
+    .identify-popup{position:absolute;z-index:600;background:rgba(12,10,8,.96);border:1px solid var(--border);border-radius:5px;padding:0;min-width:200px;max-width:280px;pointer-events:auto;backdrop-filter:blur(8px);box-shadow:0 4px 24px rgba(0,0,0,.5);}
+    .identify-popup-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);}
+    .identify-popup-title{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;}
+    .identify-popup-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;transition:color .2s;}
+    .identify-popup-close:hover{color:var(--accent);}
+    .identify-popup-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;}
+    .identify-popup-desc{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.04em;line-height:1.6;}
+    .identify-popup-row{display:flex;gap:6px;align-items:baseline;}
+    .identify-popup-key{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;min-width:72px;}
+    .identify-popup-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--text);letter-spacing:.04em;word-break:break-word;}
+    .identify-loading{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;padding:10px 12px;animation:pulse 1.2s infinite;}
+    @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+    .identify-no-data{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;padding:10px 12px;font-style:italic;}
   </style>
 </head>
 <body>
@@ -220,14 +234,14 @@
 
   <!-- ══ HERO ══ -->
   <div class="hero reveal">
-    <div class="hero-eyebrow"><span>03</span>Bioregional Atlas · Multi-Theme Map Series</div>
+    <div class="hero-eyebrow"><span>03</span>Bioregional Spatial Intelligence Framework</div>
     <h1>Bioregional<br><em>Atlas</em></h1>
     <div class="hero-system-line">Spatial Intelligence System · BC Bioregion</div>
     <p class="hero-summary">
-      A multi-theme spatial intelligence atlas integrating environmental, cultural, and economic
-      datasets across multiple regions — built on a structured data library, automated cartographic
-      production, and LiDAR-derived terrain analysis. Designed to support site-level and regional
-      decision-making where spatial context determines what options are even available.
+      Integrated provincial datasets, LiDAR analysis, and automated map production into a
+      scalable bioregional spatial intelligence framework — designed to support land-use planning,
+      environmental review, and resource management decisions where spatial context determines
+      what options are even on the table.
     </p>
     <div class="metrics">
       <div class="metric"><div class="metric-val">20+</div><div class="metric-label">Study Sites</div></div>
@@ -241,16 +255,17 @@
 
   <!-- ══ 01 CONTEXT ══ -->
   <div class="section reveal">
-    <div class="sec-tag"><span>01</span>Context</div>
+    <div class="sec-tag"><span>01</span>Problem Space</div>
     <div class="sec-capability">Capability demonstrated → Problem framing &amp; spatial systems thinking</div>
-    <h2>What problem does this solve?</h2>
+    <h2>The information integration problem</h2>
     <div class="sec-body">
-      <p>Land-use planning, environmental review, and resource management decisions in BC depend on the ability to <strong>compare multiple sites across multiple dimensions simultaneously</strong> — terrain, ecology, resources, planning overlays, cultural context. Without a structured spatial system, that comparison is slow, inconsistent, and hard to defend.</p>
-      <p>This atlas was built to answer a specific organizational need: produce a <strong>consistent, replicable, multi-theme spatial reference</strong> for a large set of study sites — one that could be updated, extended, and queried without rebuilding the workflow each time.</p>
+      <p>Bioregional planning in BC requires integrating <strong>diverse spatial datasets across multiple provincial repositories</strong> — terrain, ecology, resource tenures, cultural context, planning overlays — and synthesizing them into a coherent picture for each site under review. Without a structured system, that synthesis is slow, inconsistent, and nearly impossible to repeat at scale.</p>
+      <p>The core challenge: datasets exist across BC Data Catalogue, TANTALIS, federal sources, and field surveys — <strong>no standardized synthesis across sites</strong>, no consistent cartographic logic, no reusable production path. Every site analysis starts from scratch.</p>
+      <p>To address this, a scalable GIS architecture was designed to integrate provincial datasets, LiDAR-derived terrain analysis, and automated atlas production into a single repeatable framework. The result is not a collection of maps — it is a <strong>spatial information infrastructure</strong>.</p>
     </div>
     <div class="callout">
-      <strong>Scale of the work</strong>
-      <p>20+ sites × 15+ themes means 300+ individual map products, all derived from the same data library and layout logic. That scale is only achievable through systems design — not manual cartography.</p>
+      <strong>Scale of the problem</strong>
+      <p>20+ sites × 15+ themes means 300+ individual map products needed — all requiring consistent data, symbology, and layout logic. That scale is only tractable through systems design, not manual cartography.</p>
     </div>
 
     <!-- MAP SERIES GRID -->
@@ -270,29 +285,46 @@
 
   <!-- ══ 02 DATA ARCHITECTURE ══ -->
   <div class="section reveal">
-    <div class="sec-tag"><span>02</span>Data Architecture</div>
-    <div class="sec-capability">Capability demonstrated → Understanding of BC's spatial data ecosystem</div>
-    <h2>Organizing the data library</h2>
+    <div class="sec-tag"><span>02</span>System Architecture</div>
+    <div class="sec-capability">Capability demonstrated → Data abstraction layer design &amp; BC ecosystem literacy</div>
+    <h2>Three-layer data architecture</h2>
     <div class="sec-body">
-      <p>Before any maps could be produced, the underlying data needed a <strong>coherent, maintainable organizational structure</strong>. Datasets from BC Data Catalogue, TANTALIS, federal sources, and field surveys were catalogued into a thematic data library — the single source of truth for all atlas products.</p>
-      <p>This taxonomy did more than organize files. It defined the atlas structure, drove the cartographic template logic, and made it possible to add a new site or update a dataset without touching the rest of the system.</p>
+      <p>The framework is built on a three-layer architecture: <strong>source data → thematic data library → atlas production</strong>. The library acts as the abstraction layer — isolating the production system from raw source variation, and making it possible to update a dataset or add a new site without touching the cartographic pipeline.</p>
+      <p>Datasets from BC Data Catalogue, TANTALIS, FWA, federal sources, and LiDAR flights were catalogued into a thematic data library organized by bioregional theme. This taxonomy <strong>defined the atlas structure</strong>, drove the cartographic template logic, and became the single source of truth across all 300+ map products.</p>
+    </div>
+    <div class="vis-wrap" style="margin-bottom:20px;">
+      <div class="vis-label">System Layers <span>// data abstraction architecture</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
+        <div style="background:var(--surface2);padding:16px 18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Layer 1 — Sources</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text);line-height:1.8;">BC Data Catalogue<br>TANTALIS<br>FWA<br>Federal datasets<br>LiDAR flights</div>
+        </div>
+        <div style="background:var(--surface);padding:16px 18px;border-left:2px solid var(--accent);">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Layer 2 — Data Library</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text);line-height:1.8;">Thematic taxonomy<br>Standardized schema<br>Version control<br>Single source of truth</div>
+        </div>
+        <div style="background:var(--surface2);padding:16px 18px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;">Layer 3 — Production</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text);line-height:1.8;">Map Series engine<br>Layout templates<br>Automated export<br>Atlas package</div>
+        </div>
+      </div>
     </div>
 
     <div class="vis-wrap">
-      <div class="vis-label">Data Taxonomy <span>// click any theme group to expand layers</span></div>
-      <div class="tax-root">Bioregional Atlas — Data Library</div>
+      <div class="vis-label">Thematic Data Taxonomy <span>// click any group to expand layers</span></div>
+      <div class="tax-root">Bioregional Spatial Intelligence Framework — Data Library</div>
       <div class="tax-themes" id="taxonomy"></div>
     </div>
   </div>
 
   <!-- ══ 03 WORKFLOW ══ -->
   <div class="section reveal">
-    <div class="sec-tag"><span>03</span>Workflow</div>
-    <div class="sec-capability">Capability demonstrated → GIS production pipeline design</div>
-    <h2>End-to-end production system</h2>
+    <div class="sec-tag"><span>03</span>Production System</div>
+    <div class="sec-capability">Capability demonstrated → GIS production pipeline design &amp; repeatability</div>
+    <h2>Designed for repeatability and modularity</h2>
     <div class="sec-body">
-      <p>The atlas was built on a <strong>reproducible pipeline</strong> — from raw data ingestion to exported map products. ArcGIS Pro Map Series (Data Driven Pages) drove cartographic output: once the template and symbology were set, the same layout generated maps for every site automatically.</p>
-      <p>Python scripting handled batch processing, projection management, and geodatabase operations. The pipeline was designed so that adding a new site required only updating the data library — not rebuilding the workflow.</p>
+      <p>A repeatable GIS production workflow was designed to integrate provincial datasets, LiDAR analysis, and automated atlas generation from a single data library. ArcGIS Pro Map Series (Data Driven Pages) drove cartographic output — once the template and symbology were configured, the same layout engine generated maps for every site automatically.</p>
+      <p>The pipeline was built modularly: LiDAR terrain analysis is one independent module, cartographic production is another. Each can be updated or re-run without disrupting the rest. <strong>Adding a new study site requires only updating the data library</strong> — the entire production pipeline re-runs unchanged.</p>
     </div>
     <div class="tech-stack">
       <span class="tech-pill">ArcGIS Pro</span>
@@ -303,7 +335,7 @@
       <span class="tech-pill">TANTALIS</span>
     </div>
     <div class="vis-wrap">
-      <div class="vis-label">Production Pipeline <span>// end-to-end</span></div>
+      <div class="vis-label">Production Pipeline <span>// modular end-to-end</span></div>
       <div class="pipeline-wrap">
         <div class="pipeline" id="pipeline"></div>
       </div>
@@ -400,35 +432,36 @@
 
   <!-- ══ 06 OUTCOME ══ -->
   <div class="section reveal">
-    <div class="sec-tag"><span>06</span>Outcome</div>
-    <div class="sec-capability">Capability demonstrated → Delivering measurable decision support value</div>
-    <h2>What this system enabled</h2>
+    <div class="sec-tag"><span>06</span>System Capability</div>
+    <div class="sec-capability">Capability demonstrated → Spatial information infrastructure design</div>
+    <h2>What the framework delivers</h2>
     <div class="sec-body">
-      <p>A scalable spatial intelligence framework for bioregional analysis — one that converts raw provincial and field data into <strong>structured, decision-ready spatial context</strong>. The value is not in the maps themselves, but in what they make possible: faster site comparison, more consistent spatial evidence, and a reusable production system that scales without linear effort growth.</p>
+      <p>The project established a scalable framework for synthesizing environmental, cultural, and resource datasets into a consistent bioregional atlas. The atlas enables <strong>rapid comparison of ecological systems, resource development context, and planning designations across sites</strong> — turning a weeks-long manual process into a reproducible spatial intelligence product.</p>
+      <p>The deliverable is not a set of maps. It is a <strong>spatial information infrastructure</strong> — a system that integrates 40+ provincial datasets across environmental, cultural, and economic domains, combines LiDAR-derived terrain analysis with thematic provincial data, and supports consistent multi-theme atlas generation across multiple regions without rebuilding the workflow.</p>
     </div>
     <div class="decision-grid">
       <div class="decision-card">
-        <div class="dc-type">Information Products</div>
+        <div class="dc-type">Data Integration</div>
         <div class="dc-items">
-          <div class="dc-item">Consistent <strong>thematic map series</strong> for every site</div>
-          <div class="dc-item">Multi-theme <strong>spatial synthesis</strong> per region</div>
-          <div class="dc-item">LiDAR-derived <strong>terrain &amp; hydrology layers</strong></div>
+          <div class="dc-item">Integrates <strong>40+ provincial datasets</strong> across six theme domains</div>
+          <div class="dc-item">Unified schema across <strong>BC Data Cat., TANTALIS, FWA,</strong> and field sources</div>
+          <div class="dc-item">Single data library drives <strong>all atlas products</strong></div>
         </div>
       </div>
       <div class="decision-card">
         <div class="dc-type">Analytical Capability</div>
         <div class="dc-items">
-          <div class="dc-item">Cross-site <strong>comparison at consistent scale</strong></div>
-          <div class="dc-item">Resource &amp; planning <strong>constraint mapping</strong></div>
-          <div class="dc-item">Terrain context from <strong>automated LiDAR analysis</strong></div>
+          <div class="dc-item">LiDAR-derived <strong>terrain and hydrology</strong> at site scale</div>
+          <div class="dc-item">Cross-site comparison of <strong>ecological, resource &amp; planning</strong> context</div>
+          <div class="dc-item">Spatial synthesis ready for <strong>planning &amp; review processes</strong></div>
         </div>
       </div>
       <div class="decision-card">
-        <div class="dc-type">Operational Impact</div>
+        <div class="dc-type">Scalable Production</div>
         <div class="dc-items">
-          <div class="dc-item">Reduced map production from <strong>weeks to hours</strong></div>
-          <div class="dc-item">New sites added <strong>without rebuilding workflow</strong></div>
-          <div class="dc-item">Spatial evidence ready for <strong>planning &amp; review processes</strong></div>
+          <div class="dc-item">New sites added <strong>without rebuilding</strong> the pipeline</div>
+          <div class="dc-item">Same workflow generates <strong>300+ map products</strong> consistently</div>
+          <div class="dc-item">Reduced atlas production from <strong>weeks to hours</strong></div>
         </div>
       </div>
     </div>
@@ -676,33 +709,34 @@ var LIDAR_STAGES = [
   var LAYER_GROUPS=[
     {id:'physical', label:'Physical',       col:'#5b9bd5', minZoom:5,
      layers:[
-       {name:'Watersheds', wms:'WHSE_BASEMAPPING.FWA_WATERSHED_GROUPS_POLY', type:'poly'},
-       {name:'Rivers',     wms:'WHSE_BASEMAPPING.FWA_RIVERS_POLY',           type:'poly'},
+       {name:'FWA Stream Network', wms:'WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP',    type:'line', desc:'Freshwater Atlas stream lines — includes stream order, watershed code, and flow direction.'},
+       {name:'FWA Lakes & Wetlands',wms:'WHSE_BASEMAPPING.FWA_LAKES_POLY',           type:'poly', desc:'Freshwater Atlas lake polygons — named waterbodies with area and hydrological attributes.'},
+       {name:'Watershed Groups',   wms:'WHSE_BASEMAPPING.FWA_WATERSHED_GROUPS_POLY', type:'poly', desc:'Major watershed group boundaries used for hydrological analysis and reporting units.'},
      ]},
-    {id:'natural',  label:'Natural Env.',   col:'#6dbf8a', minZoom:6,
+    {id:'natural',  label:'Natural Env.',   col:'#6dbf8a', minZoom:7,
      layers:[
-       {name:'BEC Zones',  wms:'WHSE_FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY',           type:'poly'},
-       {name:'Old Growth', wms:'WHSE_FOREST_VEGETATION.OGSR_TAP_PRIORITY_DEF_AREA_SP',     type:'poly'},
+       {name:'BEC Zones',  wms:'WHSE_FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY',       type:'poly', desc:'Biogeoclimatic Ecosystem Classification zones — defines climate, vegetation, and ecological site series.'},
+       {name:'Old Growth', wms:'WHSE_FOREST_VEGETATION.OGSR_TAP_PRIORITY_DEF_AREA_SP', type:'poly', desc:'Old Growth Strategic Review deferral areas — priority old growth stands recommended for interim protection.'},
      ]},
-    {id:'resources',label:'Resources',      col:'#e85d3a', minZoom:6,
+    {id:'resources',label:'Resources',      col:'#e85d3a', minZoom:8,
      layers:[
-       {name:'TSA Boundaries', wms:'WHSE_ADMIN_BOUNDARIES.FADM_TSA',              type:'poly'},
-       {name:'Mineral Tenure', wms:'WHSE_MINERAL_TENURE.MTA_ACQUIRED_TENURE_SVW', type:'poly'},
+       {name:'TSA Boundaries',  wms:'WHSE_ADMIN_BOUNDARIES.FADM_TSA',              type:'poly', desc:'Timber Supply Areas — administrative units for timber harvest planning and AAC (Annual Allowable Cut) determination.'},
+       {name:'Mineral Tenure',  wms:'WHSE_MINERAL_TENURE.MTA_ACQUIRED_TENURE_SVW', type:'poly', desc:'Active mineral and placer mining tenures from TANTALIS — shows exploration and mining claims.'},
      ]},
     {id:'cultural', label:'Cultural',       col:'#c8a87a', minZoom:7,
      layers:[
-       {name:'First Nations Reserves', wms:'WHSE_ADMIN_BOUNDARIES.CLAB_INDIAN_RESERVES', type:'poly'},
-       {name:'TANTALIS Crown Land',    wms:'WHSE_TANTALIS.TA_CROWN_LEASES_SVW',           type:'poly'},
+       {name:'First Nations Reserves', wms:'WHSE_ADMIN_BOUNDARIES.CLAB_INDIAN_RESERVES', type:'poly', desc:'Indian Reserve boundaries from the National Geographic Database — land set aside under the Indian Act.'},
+       {name:'TANTALIS Crown Land',    wms:'WHSE_TANTALIS.TA_CROWN_LEASES_SVW',           type:'poly', desc:'Crown land leases and licences from TANTALIS — shows long-term disposition of provincial Crown land.'},
      ]},
     {id:'infra',    label:'Infrastructure', col:'#9b8fc4', minZoom:9,
      layers:[
-       {name:'Roads',        wms:'WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP',             type:'line'},
-       {name:'Transmission', wms:'WHSE_IMAGERY_AND_BASE_MAPS.TRIM_EBM_ELEC_TRANSMISSION_L',  type:'line'},
+       {name:'Digital Road Atlas',  wms:'WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP',            type:'line', desc:'BC Digital Road Atlas — classified road network including forest service roads, highways, and resource roads.'},
+       {name:'Transmission Lines',  wms:'WHSE_IMAGERY_AND_BASE_MAPS.TRIM_EBM_ELEC_TRANSMISSION_L', type:'line', desc:'Electrical transmission infrastructure from BC TRIM — high-voltage transmission corridors.'},
      ]},
     {id:'desig',    label:'Designations',   col:'#f0a060', minZoom:6,
      layers:[
-       {name:'Protected Areas', wms:'WHSE_TANTALIS.TA_PARK_ECORES_PA_SVW',        type:'poly'},
-       {name:'ALR',             wms:'WHSE_LEGAL_ADMIN_BOUNDARIES.OATS_ALR_POLYS', type:'poly'},
+       {name:'Protected Areas', wms:'WHSE_TANTALIS.TA_PARK_ECORES_PA_SVW',        type:'poly', desc:'Parks and protected areas under the Park Act and Environment & Land Use Act — includes Provincial Parks, Ecological Reserves, and Protected Areas.'},
+       {name:'ALR',             wms:'WHSE_LEGAL_ADMIN_BOUNDARIES.OATS_ALR_POLYS', type:'poly', desc:'Agricultural Land Reserve boundaries — land protected from non-agricultural use under the Agricultural Land Commission Act.'},
      ]},
   ];
 
@@ -897,6 +931,158 @@ var LIDAR_STAGES = [
     });
   }
   function setStatus(msg){document.getElementById('loc-status').textContent=msg;}
+
+  // ── WMS GetFeatureInfo identify ──
+  var identifyPopup=null;
+
+  // Build flat list of all active layers for identify
+  function getActiveLayersList(){
+    var active=[];
+    LAYER_GROUPS.forEach(function(g){
+      if(activeGroups[g.id]){
+        g.layers.forEach(function(l){ active.push({group:g, layer:l}); });
+      }
+    });
+    return active;
+  }
+
+  function showIdentifyPopup(latlng, content){
+    if(identifyPopup){ identifyPopup.remove(); identifyPopup=null; }
+    var container=document.createElement('div');
+    container.className='identify-popup';
+    container.innerHTML=content;
+    container.querySelector('.identify-popup-close').addEventListener('click',function(){
+      container.remove(); identifyPopup=null;
+    });
+    identifyPopup=L.popup({
+      closeButton:false, className:'', maxWidth:300,
+      autoPan:true, offset:[0,-4]
+    })
+    .setLatLng(latlng)
+    .setContent(container)
+    .openOn(map);
+  }
+
+  function buildPopupRows(props, groupCol, layerName){
+    // Filter out geometry/internal fields, show meaningful ones
+    var skip=/^(objectid|shape|geometry|wkb_geometry|gml_id|se_anno|fid)$/i;
+    var rows=Object.keys(props)
+      .filter(function(k){ return !skip.test(k) && props[k]!==null && props[k]!==''; })
+      .slice(0,8)
+      .map(function(k){
+        return '<div class="identify-popup-row">'+
+          '<span class="identify-popup-key">'+k.toLowerCase().replace(/_/g,' ')+'</span>'+
+          '<span class="identify-popup-val">'+props[k]+'</span>'+
+        '</div>';
+      }).join('');
+    return rows || null;
+  }
+
+  map.on('click', function(e){
+    var activeLayers=getActiveLayersList();
+    if(!activeLayers.length) return;
+
+    var zoom=map.getZoom();
+    var size=map.getSize();
+    var point=map.latLngToContainerPoint(e.latlng);
+    var bounds=map.getBounds();
+    var bbox=[bounds.getWest(),bounds.getSouth(),bounds.getEast(),bounds.getNorth()].join(',');
+
+    // Check at least one active layer is at valid zoom
+    var queryable=activeLayers.filter(function(a){ return zoom>=a.group.minZoom; });
+    if(!queryable.length){
+      var g=activeLayers[0].group;
+      showIdentifyPopup(e.latlng,
+        '<div class="identify-popup-hd">'+
+          '<span class="identify-popup-title" style="color:'+g.col+'">'+g.label+'</span>'+
+          '<button class="identify-popup-close">×</button>'+
+        '</div>'+
+        '<div class="identify-no-data">Zoom in to zoom '+g.minZoom+'+ to identify features</div>'
+      );
+      return;
+    }
+
+    // Show loading state immediately
+    var firstGroup=queryable[0].group;
+    showIdentifyPopup(e.latlng,
+      '<div class="identify-popup-hd">'+
+        '<span class="identify-popup-title" style="color:'+firstGroup.col+'">Identifying…</span>'+
+        '<button class="identify-popup-close">×</button>'+
+      '</div>'+
+      '<div class="identify-loading">querying WMS…</div>'
+    );
+
+    // Build combined WMS layer string — query all active+zoomable layers together
+    var layerNames=queryable.map(function(a){return a.layer.wms;}).join(',');
+    var url=WMS+'?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo'+
+      '&LAYERS='+encodeURIComponent(layerNames)+
+      '&QUERY_LAYERS='+encodeURIComponent(layerNames)+
+      '&STYLES=&BBOX='+bbox+
+      '&WIDTH='+size.x+'&HEIGHT='+size.y+
+      '&SRS=EPSG:4326&X='+Math.round(point.x)+'&Y='+Math.round(point.y)+
+      '&INFO_FORMAT=application/json&FEATURE_COUNT=5';
+
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data.features || !data.features.length){
+          // Nothing found — show layer description from our metadata
+          var hd='<div class="identify-popup-hd">'+
+            '<span class="identify-popup-title" style="color:'+firstGroup.col+'">'+queryable[0].layer.name+'</span>'+
+            '<button class="identify-popup-close">×</button>'+
+          '</div>';
+          var body='<div class="identify-popup-body">'+
+            '<div class="identify-popup-desc">'+queryable[0].layer.desc+'</div>'+
+            '<div class="identify-popup-row"><span class="identify-popup-key">source</span><span class="identify-popup-val">'+queryable[0].layer.wms+'</span></div>'+
+          '</div>';
+          showIdentifyPopup(e.latlng, hd+body);
+          return;
+        }
+
+        // Build popup from first feature
+        var feat=data.features[0];
+        var props=feat.properties||{};
+        // Find which group this layer belongs to
+        var matchedGroup=firstGroup, matchedLayer=queryable[0].layer;
+        var typeName=(feat.id||'').split('.')[0];
+        queryable.forEach(function(a){
+          if(a.layer.wms.toLowerCase().includes(typeName.toLowerCase())){
+            matchedGroup=a.group; matchedLayer=a.layer;
+          }
+        });
+
+        var rows=buildPopupRows(props, matchedGroup.col, matchedLayer.name);
+        var hd='<div class="identify-popup-hd">'+
+          '<span class="identify-popup-title" style="color:'+matchedGroup.col+'">'+matchedLayer.name+'</span>'+
+          '<button class="identify-popup-close">×</button>'+
+        '</div>';
+        var body='<div class="identify-popup-body">'+
+          '<div class="identify-popup-desc">'+matchedLayer.desc+'</div>'+
+          (rows?'<div style="border-top:1px solid var(--border);margin-top:6px;padding-top:6px;">'+rows+'</div>':'')+
+        '</div>';
+        showIdentifyPopup(e.latlng, hd+body);
+      })
+      .catch(function(){
+        // Fallback — show layer metadata only
+        var g=queryable[0].group, l=queryable[0].layer;
+        showIdentifyPopup(e.latlng,
+          '<div class="identify-popup-hd">'+
+            '<span class="identify-popup-title" style="color:'+g.col+'">'+l.name+'</span>'+
+            '<button class="identify-popup-close">×</button>'+
+          '</div>'+
+          '<div class="identify-popup-body">'+
+            '<div class="identify-popup-desc">'+l.desc+'</div>'+
+            '<div class="identify-popup-row"><span class="identify-popup-key">source</span><span class="identify-popup-val">openmaps.gov.bc.ca</span></div>'+
+          '</div>'
+        );
+      });
+  });
+
+  // Cursor hint when layers are on
+  map.on('mousemove', function(){
+    var active=getActiveLayersList();
+    map.getContainer().style.cursor=active.length?'crosshair':'';
+  });
 
   // Auto-load physical layer
   setTimeout(function(){toggleGroup('physical');},600);
