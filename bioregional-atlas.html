@@ -165,7 +165,7 @@
     .lidar-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;text-align:right;margin-top:10px;opacity:.6;}
 
     /* ── BC DATA MAP ── */
-    .map-outer{display:grid;grid-template-columns:1fr 210px;height:480px;}
+    .map-outer{display:grid;grid-template-columns:1fr 240px;height:520px;}
     .map-canvas-col{position:relative;height:100%;overflow:hidden;}
     #bc-map{width:100%;height:100%;}
     .map-sidebar{border-left:1px solid var(--border);height:100%;display:flex;flex-direction:column;overflow:hidden;}
@@ -196,27 +196,40 @@
     .leg-group-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;flex:1;}
     .leg-group-status{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);opacity:.5;letter-spacing:.04em;white-space:nowrap;}
     .leg-group.on .leg-group-status{display:none;}
-    .leg-layers{border-top:1px solid var(--border);background:rgba(0,0,0,.15);display:none;padding:4px 0 2px;}
+    .leg-layers{border-top:1px solid var(--border);background:rgba(0,0,0,.15);display:none;}
     .leg-group.on .leg-layers{display:block;}
-    /* Legend images — one per WMS layer, stacked */
-    .leg-wms-img{display:block;width:100%;height:auto;padding:0 6px 2px;box-sizing:border-box;opacity:.95;}
-    .leg-zoom-hint{font-size:9px;color:var(--accent2);padding:3px 8px 6px;font-family:'DM Mono',monospace;display:none;opacity:.8;}
+    .leg-layer-row{display:flex;align-items:flex-start;gap:8px;padding:5px 8px 3px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,.04);}
+    .leg-layer-row:last-of-type{border-bottom:none;}
+    .leg-layer-row:hover{background:rgba(255,255,255,.04);}
+    .leg-layer-row.active{background:rgba(255,255,255,.05);}
+    .leg-layer-cb{width:11px;height:11px;border-radius:2px;border:1.5px solid;flex-shrink:0;margin-top:5px;transition:background .15s,box-shadow .15s;}
+    .leg-chevron{font-size:14px;color:var(--muted);transition:transform .2s;line-height:1;margin-left:auto;}
+    .leg-wms-img{display:block;width:100%;height:auto;padding:0;box-sizing:border-box;opacity:.95;flex:1;min-width:0;}
+    .leg-zoom-hint{font-size:9px;color:var(--accent2);padding:3px 8px 5px;font-family:'DM Mono',monospace;display:none;opacity:.8;}
     .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block;}
     /* Zoom + scale bar */
-    .map-zoom-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(12,10,8,.82);border:1px solid var(--border);border-radius:3px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--body);display:flex;align-items:center;gap:6px;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;}
+    .map-zoom-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:600;background:rgba(12,10,8,.82);border:1px solid var(--border);border-radius:3px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--body);display:flex;align-items:center;gap:6px;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;}
     .zoom-bar-zoom{color:var(--accent2);}
     .zoom-bar-sep{color:var(--muted);opacity:.5;}
     .zoom-bar-scale{color:var(--text);}
     /* Fullscreen button */
-    .map-fullscreen-btn{position:absolute;top:10px;right:10px;z-index:500;background:rgba(12,10,8,.82);border:1px solid var(--border);border-radius:3px;color:var(--body);font-size:16px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s;backdrop-filter:blur(4px);padding:0;}
+    .map-fullscreen-btn{position:absolute;top:10px;right:10px;z-index:600;background:rgba(12,10,8,.88);border:1px solid var(--border);border-radius:3px;color:var(--body);font-size:15px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s,background .2s;backdrop-filter:blur(6px);padding:0;line-height:1;}
     .map-fullscreen-btn:hover{color:var(--text);border-color:var(--accent);}
+    /* Exit button — red and prominent in fullscreen */
+    #map-vis-wrap.fs-active .map-fullscreen-btn{z-index:3100;background:rgba(30,10,8,.95);border-color:var(--accent);color:var(--accent);font-size:16px;font-weight:bold;}
     /* Fullscreen state */
-    .map-section.fs-active .map-outer{height:calc(100vh - 120px);}
-    .map-section.fs-active{position:fixed;inset:0;z-index:2000;background:var(--bg);padding:60px 0 0;overflow:hidden;}
-    .map-section.fs-active .map-outer{height:calc(100vh - 60px);}
+    #map-vis-wrap.fs-active{position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;}
+    #map-vis-wrap.fs-active .vis-label{flex-shrink:0;padding:7px 52px;border-bottom:1px solid var(--border);margin:0;}
+    #map-vis-wrap.fs-active .map-outer{flex:1;min-height:0;height:0 !important;grid-template-columns:1fr 240px;}
+    #map-vis-wrap.fs-active .map-canvas-col{position:relative;height:100% !important;}
+    #map-vis-wrap.fs-active #bc-map{height:100% !important;}
+    #map-vis-wrap.fs-active .map-sidebar{height:100%;overflow-y:auto;max-height:none;}
+    #map-vis-wrap.fs-active .map-fullscreen-btn{z-index:3100 !important;}
+    #map-vis-wrap.fs-active #bc-inset,
+    #map-vis-wrap.fs-active .map-zoom-bar{z-index:3000 !important;}
     /* Inset overview map */
-    #bc-inset{position:absolute;bottom:40px;right:12px;width:150px;height:110px;border:1px solid var(--border);border-radius:4px;overflow:hidden;z-index:500;box-shadow:0 2px 10px rgba(0,0,0,.6);}
-    #bc-inset .leaflet-control-zoom,#bc-inset .leaflet-control-attribution{display:none;}
+    #bc-inset{position:absolute;bottom:12px;right:12px;width:150px;height:110px;border:1px solid var(--border);border-radius:4px;overflow:hidden;z-index:600;box-shadow:0 2px 10px rgba(0,0,0,.6);}
+    #bc-inset .leaflet-control-zoom,#bc-inset .leaflet-control-attribution{display:none !important;}
     /* Inset viewport rectangle — shows main map extent */
     .inset-viewport{position:absolute;border:1.5px solid #e85d3a;border-radius:1px;pointer-events:none;z-index:600;box-shadow:0 0 0 1px rgba(232,93,58,.25);background:rgba(232,93,58,.06);}
     /* disclaimer */
@@ -476,7 +489,7 @@
       <p>The actual study area is confidential. Use the location controls to explore the same layer structure applied to any BC area of interest.</p>
     </div>
 
-    <div class="vis-wrap">
+    <div class="vis-wrap" id="map-vis-wrap">
       <div class="vis-label">BC Open Data — Atlas Layer Groups <span>// live WMS · click legend to toggle</span></div>
       <div class="map-outer">
         <!-- MAP CANVAS -->
@@ -882,23 +895,29 @@ var LIDAR_STAGES = [
 
 
   // Build GetLegendGraphic URL for a single layer
+  // WIDTH param constrains the legend graphic width — most BC WMS layers respect this
+  // fontSize + forceLabels ensure consistent text regardless of layer complexity
   function layerLegendUrl(l){
     return l.wmsUrl + '?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic' +
       '&LAYER=' + encodeURIComponent(l.wms) +
       '&FORMAT=image%2Fpng&TRANSPARENT=true' +
-      '&LEGEND_OPTIONS=fontAntiAliasing:true;fontSize:10;' +
-      'bgColor:0x1a1410;fontColor:0xd4b8ad;labelMargin:4;dpi:120';
+      '&LEGEND_OPTIONS=fontAntiAliasing:true;fontSize:14;fontName:Arial;' +
+      'bgColor:0x1a1410;fontColor:0xFFE8D6;labelMargin:6;' +
+      'forceLabels:on;forceTitles:off;countMatched:false';
   }
 
-  // ── Build legend = toggle control ──
+  // ── Build legend: group header (expand/collapse) + per-layer toggle rows ──
+  // activeLayers tracks individual layer on/off state: key = groupId+'_'+wms
+  var activeLayers = {};
   var legendControlsEl = document.getElementById('legend-controls');
+
   LAYER_GROUPS.forEach(function(g){
-    activeGroups[g.id] = false;
+    activeGroups[g.id] = false; // tracks if group is expanded
     var grpEl = document.createElement('div');
     grpEl.className = 'leg-group';
     grpEl.id = 'leggrp-' + g.id;
 
-    // Header row — label + on/off status
+    // ── Group header — click to expand/collapse layer rows ──
     var hdEl = document.createElement('div');
     hdEl.className = 'leg-group-hd';
     var dot = document.createElement('span');
@@ -908,36 +927,56 @@ var LIDAR_STAGES = [
     labelSpan.className = 'leg-group-label';
     labelSpan.style.color = g.col;
     labelSpan.textContent = g.label;
-    var statusSpan = document.createElement('span');
-    statusSpan.className = 'leg-group-status';
-    statusSpan.textContent = 'off';
+    var chevron = document.createElement('span');
+    chevron.className = 'leg-chevron';
+    chevron.textContent = '›';
     hdEl.appendChild(dot);
     hdEl.appendChild(labelSpan);
-    hdEl.appendChild(statusSpan);
+    hdEl.appendChild(chevron);
     hdEl.addEventListener('click', function(){ toggleGroup(g.id); });
     grpEl.appendChild(hdEl);
 
-    // Legend body — one GetLegendGraphic <img> per layer, stacked
+    // ── Layer rows — each is its own toggle ──
     var bodyEl = document.createElement('div');
     bodyEl.className = 'leg-layers';
     bodyEl.id = 'leglayers-' + g.id;
 
     g.layers.forEach(function(l){
+      var layerKey = g.id + '_' + l.wms;
+      activeLayers[layerKey] = false;
+
+      var rowEl = document.createElement('div');
+      rowEl.className = 'leg-layer-row';
+      rowEl.id = 'legrow-' + layerKey.replace(/\W/g,'_');
+
+      // Checkbox-style toggle dot
+      var cb = document.createElement('span');
+      cb.className = 'leg-layer-cb';
+      cb.style.borderColor = g.col;
+
+      // WMS legend image
       var img = document.createElement('img');
       img.className = 'leg-wms-img';
       img.src = layerLegendUrl(l);
       img.alt = l.wms;
       img.onerror = function(){
-        // Fallback swatch if WMS legend unavailable
         var fb = document.createElement('span');
-        fb.style.cssText = 'display:flex;align-items:center;gap:6px;padding:3px 8px;';
-        fb.innerHTML = '<span style="width:14px;height:3px;background:' + g.col + ';border-radius:1px;flex-shrink:0;display:inline-block;"></span>';
+        fb.style.cssText = 'width:14px;height:3px;background:' + g.col + ';border-radius:1px;flex-shrink:0;display:inline-block;margin:6px 0;';
         img.parentNode && img.parentNode.replaceChild(fb, img);
       };
-      bodyEl.appendChild(img);
+
+      rowEl.appendChild(cb);
+      rowEl.appendChild(img);
+
+      rowEl.addEventListener('click', function(e){
+        e.stopPropagation();
+        toggleLayer(g, l, layerKey);
+      });
+
+      bodyEl.appendChild(rowEl);
     });
 
-    // Zoom hint (shown when active but zoomed out too far)
+    // Zoom hint
     var zoomHint = document.createElement('div');
     zoomHint.className = 'leg-zoom-hint';
     zoomHint.id = 'lzhint-' + g.id;
@@ -949,17 +988,15 @@ var LIDAR_STAGES = [
 function refreshLegend(){
     var zoom = map.getZoom();
     LAYER_GROUPS.forEach(function(g){
-      if(!activeGroups[g.id]) return;
       var hint = document.getElementById('lzhint-'+g.id);
       if(!hint) return;
-      var dimmed = g.layers.filter(function(l){ return zoom < l.minZoom; });
-      if(dimmed.length === g.layers.length){
-        var needed = Math.min.apply(null, g.layers.map(function(l){ return l.minZoom; }));
-        hint.textContent = 'Zoom to ' + needed + '+ to see layers';
-        hint.style.display = 'block';
-      } else if(dimmed.length > 0){
-        var needed = Math.min.apply(null, dimmed.map(function(l){ return l.minZoom; }));
-        hint.textContent = 'Some layers visible at zoom ' + needed + '+';
+      // Check only layers that are currently active
+      var activeDimmed = g.layers.filter(function(l){
+        return activeLayers[g.id+'_'+l.wms] && zoom < l.minZoom;
+      });
+      if(activeDimmed.length > 0){
+        var needed = Math.min.apply(null, activeDimmed.map(function(l){ return l.minZoom; }));
+        hint.textContent = 'Zoom to ' + needed + '+ to see some layers';
         hint.style.display = 'block';
       } else {
         hint.textContent = '';
@@ -977,33 +1014,37 @@ function refreshLegend(){
     refreshToast();
   });
 
+  // toggleGroup: expand or collapse the layer list (does NOT turn layers on/off)
   function toggleGroup(id){
     activeGroups[id] = !activeGroups[id];
-    var grpEl   = document.getElementById('leggrp-'+id);
-    var statusEl = grpEl ? grpEl.querySelector('.leg-group-status') : null;
-    if(grpEl)    grpEl.classList.toggle('on', activeGroups[id]);
-    if(statusEl) statusEl.textContent = activeGroups[id] ? '' : 'off';
+    var grpEl = document.getElementById('leggrp-'+id);
+    if(grpEl) grpEl.classList.toggle('on', activeGroups[id]);
+    var chevron = grpEl ? grpEl.querySelector('.leg-chevron') : null;
+    if(chevron) chevron.style.transform = activeGroups[id] ? 'rotate(90deg)' : '';
+  }
 
-    var grp = LAYER_GROUPS.find(function(g){ return g.id===id; });
-    if(!grp) return;
-    if(activeGroups[id]){
-      grp.layers.forEach(function(l){
-        var key = id+'_'+l.wms;
-        if(!leafletLayers[key]){
-          leafletLayers[key] = L.tileLayer.wms(l.wmsUrl,{
-            layers:l.wms, format:'image/png', transparent:true, version:'1.1.1', opacity:0.72,
-          });
-        }
-        leafletLayers[key].addTo(map);
-      });
+  // toggleLayer: turn an individual WMS layer on/off
+  function toggleLayer(g, l, layerKey){
+    activeLayers[layerKey] = !activeLayers[layerKey];
+    var rowEl = document.getElementById('legrow-' + layerKey.replace(/\W/g,'_'));
+    var cb = rowEl ? rowEl.querySelector('.leg-layer-cb') : null;
+    if(rowEl) rowEl.classList.toggle('active', activeLayers[layerKey]);
+    if(cb){
+      cb.style.background = activeLayers[layerKey] ? g.col : 'transparent';
+      cb.style.boxShadow  = activeLayers[layerKey] ? '0 0 5px ' + g.col + '88' : 'none';
+    }
+    var key = g.id + '_' + l.wms;
+    if(activeLayers[layerKey]){
+      if(!leafletLayers[key]){
+        leafletLayers[key] = L.tileLayer.wms(l.wmsUrl,{
+          layers:l.wms, format:'image/png', transparent:true, version:'1.1.1', opacity:0.72,
+        });
+      }
+      leafletLayers[key].addTo(map);
     } else {
-      grp.layers.forEach(function(l){
-        var key = id+'_'+l.wms;
-        if(leafletLayers[key]) map.removeLayer(leafletLayers[key]);
-      });
+      if(leafletLayers[key]) map.removeLayer(leafletLayers[key]);
     }
     refreshLegend();
-    refreshToast();
   }
 
   // ── View controls ──
@@ -1066,8 +1107,12 @@ function refreshLegend(){
 
   // ── Identify: fixed div overlay (not L.popup to avoid event conflicts) ──
 
-  // Auto-load physical layer
-  setTimeout(function(){ toggleGroup('physical'); }, 600);
+  // Auto-open physical group and turn on its first two layers
+  setTimeout(function(){
+    toggleGroup('physical'); // expand
+    var g = LAYER_GROUPS.find(function(g){ return g.id==='physical'; });
+    if(g) g.layers.forEach(function(l){ toggleLayer(g, l, 'physical_'+l.wms); });
+  }, 600);
 
   // ── INSET OVERVIEW MAP ──
   var insetMap = L.map('bc-inset', {
@@ -1130,18 +1175,29 @@ function refreshLegend(){
 
   // ── FULLSCREEN ──
   window.toggleMapFullscreen = function(){
-    var sec = document.querySelector('.map-section');
+    var sec = document.getElementById('map-vis-wrap');
     var btn = document.getElementById('map-fs-btn');
     var active = sec.classList.toggle('fs-active');
-    btn.textContent = active ? '✕' : '⛶';
-    btn.title = active ? 'Exit fullscreen' : 'Expand map';
+    btn.innerHTML = active ? '&#x2715;' : '&#x26F6;';
+    btn.title = active ? 'Exit fullscreen (Esc)' : 'Expand map';
+    btn.style.color = active ? 'var(--accent)' : '';
+    btn.style.borderColor = active ? 'var(--accent)' : '';
+    // Scroll map into view when expanding
+    if(active) sec.scrollIntoView({behavior:'smooth', block:'start'});
     setTimeout(function(){
       map.invalidateSize();
       insetMap.invalidateSize();
       updateInsetViewport();
       updateZoomBar();
-    }, 300);
+    }, 320);
   };
+  // ESC key exits fullscreen
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      var sec = document.getElementById('map-vis-wrap');
+      if(sec && sec.classList.contains('fs-active')) window.toggleMapFullscreen();
+    }
+  });
 
 })();
 
