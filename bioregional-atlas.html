@@ -16,17 +16,34 @@
     body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,93,58,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,93,58,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
     /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(15,12,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(15,12,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
     .nav-logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);text-decoration:none;}
     .nav-logo span{color:var(--accent);}
     .nav-back{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em;transition:color .2s;}
     .nav-back:hover{color:var(--accent);}
 
-    /* PAGE */
-    .page{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 48px;}
+    /* TWO-COLUMN LAYOUT */
+    .layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;position:relative;z-index:1;}
+
+    /* TOC SIDEBAR */
+    .toc{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;border-right:1px solid var(--border);padding:32px 0;display:flex;flex-direction:column;gap:0;background:var(--bg);}
+    .toc::-webkit-scrollbar{width:2px;}
+    .toc::-webkit-scrollbar-thumb{background:var(--border);}
+    .toc-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;padding:0 24px 10px;opacity:.5;}
+    .toc-item{display:flex;align-items:center;gap:8px;padding:7px 24px;cursor:pointer;transition:all .2s;border-left:2px solid transparent;text-decoration:none;}
+    .toc-item:hover{border-left-color:var(--border);background:rgba(255,255,255,.02);}
+    .toc-item.active{border-left-color:var(--accent);background:rgba(232,93,58,.04);}
+    .toc-item.active .toc-num{color:var(--accent);}
+    .toc-item.active .toc-title{color:var(--text);}
+    .toc-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--border);letter-spacing:.1em;flex-shrink:0;transition:color .2s;}
+    .toc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.04em;line-height:1.3;transition:color .2s;}
+    .toc-divider{height:1px;background:var(--border);margin:10px 24px;opacity:.4;}
+
+    /* PAGE CONTENT */
+    .page{position:relative;z-index:1;max-width:820px;width:100%;margin:0 auto;padding:0 52px 80px;}
 
     /* HERO */
-    .hero{padding:120px 0 64px;}
+    .hero{padding:100px 0 64px;}
     .hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;}
     .hero-eyebrow span{color:var(--accent);margin-right:10px;}
     h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px;}
@@ -39,7 +56,7 @@
     .metric-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;line-height:1.4;}
 
     /* SECTION */
-    .section{padding:72px 0;}
+    .section{padding:60px 0;scroll-margin-top:80px;}
     .section+.section{border-top:1px solid var(--border);}
     .sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;}
     .sec-tag span{color:var(--accent);margin-right:8px;}
@@ -54,6 +71,20 @@
     .callout p{font-size:13px;color:var(--muted);line-height:1.75;margin:0;}
     .tech-stack{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;}
     .tech-pill{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;border-radius:3px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+
+    /* COLLAPSIBLE DETAIL GATE */
+    .sec-preview{margin-bottom:20px;}
+    .sec-preview p{font-size:14px;color:var(--body);line-height:1.88;}
+    .sec-preview p strong{color:var(--text);font-weight:500;}
+    .expand-gate{border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-top:4px;}
+    .expand-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--surface);border:none;cursor:pointer;transition:background .2s;}
+    .expand-btn:hover{background:var(--surface2);}
+    .expand-btn-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+    .expand-btn-icon{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);transition:transform .3s;display:inline-block;}
+    .expand-gate.open .expand-btn-icon{transform:rotate(180deg);}
+    .expand-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1);}
+    .expand-gate.open .expand-body{max-height:4000px;}
+    .expand-inner{padding:20px 0 4px;}
 
     /* VIS WRAP */
     .vis-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);}
@@ -152,26 +183,46 @@
     .loc-btn:hover{border-color:var(--accent);color:var(--text);}
     .loc-btn .lb-icon{font-size:10px;}
     .loc-status{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.06em;margin-top:4px;min-height:14px;opacity:.7;}
-    .layer-list{display:flex;flex-direction:column;gap:3px;padding:10px 14px 4px;}
-    .layer-toggle{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;padding:5px 8px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;text-align:left;width:100%;}
-    .layer-toggle .l-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:box-shadow .2s;}
-    .layer-toggle.on{color:var(--text);}
-    .layer-toggle.on .l-dot{box-shadow:0 0 5px currentColor;}
-    /* dynamic legend */
-    .map-legend-wrap{padding:0 14px 10px;display:flex;flex-direction:column;}
-    .legend-empty{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;padding:8px 0;opacity:.45;font-style:italic;}
-    .legend-group{overflow:hidden;transition:max-height .3s ease,opacity .25s;max-height:0;opacity:0;}
-    .legend-group.visible{max-height:200px;opacity:1;}
-    .legend-group-hd{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:6px 0 3px;border-top:1px solid var(--border);display:flex;align-items:center;gap:5px;}
-    .legend-item{display:flex;align-items:center;gap:6px;padding:2px 0 2px 6px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.04em;transition:opacity .25s;color:var(--body);}
-    .legend-item.zoom-dim{opacity:.3;color:var(--muted);}
-    .legend-swatch{width:18px;height:3px;border-radius:1px;flex-shrink:0;}
-    .legend-poly{width:13px;height:10px;border-radius:2px;border:1.5px solid;flex-shrink:0;}
-    .legend-zoom-tag{font-size:7px;margin-left:auto;letter-spacing:.04em;color:var(--accent);opacity:.7;white-space:nowrap;}
+    /* Legend = toggle control */
+    .legend-section{padding:10px 14px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+    .legend-section::-webkit-scrollbar{width:2px;}
+    .legend-section-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;padding:0;}
+    .leg-group{border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:5px;cursor:pointer;transition:border-color .2s;}
+    .leg-group:hover{border-color:rgba(255,255,255,.15);}
+    .leg-group.on{border-color:var(--accent);}
+    .leg-group-hd{display:flex;align-items:center;gap:7px;padding:7px 10px;user-select:none;}
+    .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:box-shadow .2s;}
+    .leg-group.on .leg-dot{box-shadow:0 0 6px currentColor;}
+    .leg-group-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;flex:1;}
+    .leg-group-status{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);opacity:.5;letter-spacing:.04em;white-space:nowrap;}
+    .leg-group.on .leg-group-status{display:none;}
+    .leg-layers{border-top:1px solid var(--border);background:rgba(0,0,0,.15);display:none;padding:4px 0 2px;}
+    .leg-group.on .leg-layers{display:block;}
+    /* Legend images — one per WMS layer, stacked */
+    .leg-wms-img{display:block;width:100%;height:auto;padding:0 6px 2px;box-sizing:border-box;opacity:.95;}
+    .leg-zoom-hint{font-size:9px;color:var(--accent2);padding:3px 8px 6px;font-family:'DM Mono',monospace;display:none;opacity:.8;}
+    .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block;}
+    /* Zoom + scale bar */
+    .map-zoom-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(12,10,8,.82);border:1px solid var(--border);border-radius:3px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--body);display:flex;align-items:center;gap:6px;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;}
+    .zoom-bar-zoom{color:var(--accent2);}
+    .zoom-bar-sep{color:var(--muted);opacity:.5;}
+    .zoom-bar-scale{color:var(--text);}
+    /* Fullscreen button */
+    .map-fullscreen-btn{position:absolute;top:10px;right:10px;z-index:500;background:rgba(12,10,8,.82);border:1px solid var(--border);border-radius:3px;color:var(--body);font-size:16px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s;backdrop-filter:blur(4px);padding:0;}
+    .map-fullscreen-btn:hover{color:var(--text);border-color:var(--accent);}
+    /* Fullscreen state */
+    .map-section.fs-active .map-outer{height:calc(100vh - 120px);}
+    .map-section.fs-active{position:fixed;inset:0;z-index:2000;background:var(--bg);padding:60px 0 0;overflow:hidden;}
+    .map-section.fs-active .map-outer{height:calc(100vh - 60px);}
+    /* Inset overview map */
+    #bc-inset{position:absolute;bottom:40px;right:12px;width:150px;height:110px;border:1px solid var(--border);border-radius:4px;overflow:hidden;z-index:500;box-shadow:0 2px 10px rgba(0,0,0,.6);}
+    #bc-inset .leaflet-control-zoom,#bc-inset .leaflet-control-attribution{display:none;}
+    /* Inset viewport rectangle — shows main map extent */
+    .inset-viewport{position:absolute;border:1.5px solid #e85d3a;border-radius:1px;pointer-events:none;z-index:600;box-shadow:0 0 0 1px rgba(232,93,58,.25);background:rgba(232,93,58,.06);}
     /* disclaimer */
     .map-disclaimer{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.05em;line-height:1.5;padding:8px 14px;border-bottom:1px solid var(--border);background:rgba(240,160,96,.04);flex-shrink:0;}
     .map-disclaimer span{color:var(--accent2);}
-    /* zoom toast floats over map */
+    /* zoom toast */
     .zoom-toast{position:absolute;bottom:12px;left:12px;z-index:500;display:flex;flex-direction:column;gap:4px;pointer-events:none;}
     .zoom-toast-item{background:rgba(12,10,8,.92);border:1px solid;border-radius:4px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.06em;display:flex;align-items:center;gap:7px;backdrop-filter:blur(4px);transition:opacity .3s,transform .3s;opacity:0;transform:translateY(6px);}
     .zoom-toast-item.show{opacity:1;transform:none;}
@@ -197,13 +248,15 @@
     .reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease;}
     .reveal.visible{opacity:1;transform:none;}
 
-    @media(max-width:768px){
-      nav,.page{padding-left:24px;padding-right:24px;}
+    @media(max-width:900px){
+      .layout{grid-template-columns:1fr;}
+      .toc{display:none;}
+      .page{padding:0 24px 60px;}
       .hero{padding:90px 0 40px;}
       .metrics{grid-template-columns:1fr 1fr;}
       .tax-themes{grid-template-columns:1fr 1fr;}
       .map-outer{grid-template-columns:1fr;}
-      .map-sidebar{border-left:none;border-top:1px solid var(--border);flex-direction:row;flex-wrap:wrap;}
+      .map-sidebar{border-left:none;border-top:1px solid var(--border);}
       #bc-map{height:300px;}
       .decision-grid{grid-template-columns:1fr;}
     }
@@ -221,6 +274,9 @@
     .identify-loading{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;padding:10px 12px;animation:pulse 1.2s infinite;}
     @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
     .identify-no-data{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;padding:10px 12px;font-style:italic;}
+    .identify-popup-attrs{padding:8px 12px;display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;}
+    .identify-popup-attrs::-webkit-scrollbar{width:3px;}
+    .identify-popup-attrs::-webkit-scrollbar-thumb{background:var(--border);}
   </style>
 </head>
 <body>
@@ -230,10 +286,26 @@
   <a href="index.html" class="nav-back">← All Projects</a>
 </nav>
 
+<div class="layout">
+
+<!-- ══ TOC SIDEBAR ══ -->
+<aside class="toc" id="toc">
+  <div class="toc-label">Contents</div>
+  <a class="toc-item active" href="#sec-hero"   data-sec="sec-hero"><span class="toc-num">00</span><span class="toc-title">Overview</span></a>
+  <a class="toc-item"        href="#sec-01"     data-sec="sec-01"><span class="toc-num">01</span><span class="toc-title">Problem Space</span></a>
+  <div class="toc-divider"></div>
+  <a class="toc-item"        href="#sec-02"     data-sec="sec-02"><span class="toc-num">02</span><span class="toc-title">System Architecture</span></a>
+  <a class="toc-item"        href="#sec-03"     data-sec="sec-03"><span class="toc-num">03</span><span class="toc-title">Production System</span></a>
+  <a class="toc-item"        href="#sec-04"     data-sec="sec-04"><span class="toc-num">04</span><span class="toc-title">LiDAR Automation</span></a>
+  <div class="toc-divider"></div>
+  <a class="toc-item"        href="#sec-05"     data-sec="sec-05"><span class="toc-num">05</span><span class="toc-title">Data in Context</span></a>
+  <a class="toc-item"        href="#sec-06"     data-sec="sec-06"><span class="toc-num">06</span><span class="toc-title">System Capability</span></a>
+</aside>
+
 <div class="page">
 
   <!-- ══ HERO ══ -->
-  <div class="hero reveal">
+  <div class="hero reveal" id="sec-hero">
     <div class="hero-eyebrow"><span>03</span>Bioregional Spatial Intelligence Framework</div>
     <h1>Bioregional<br><em>Atlas</em></h1>
     <div class="hero-system-line">Spatial Intelligence System · BC Bioregion</div>
@@ -254,7 +326,7 @@
   <div style="height:1px;background:var(--border);"></div>
 
   <!-- ══ 01 CONTEXT ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-01">
     <div class="sec-tag"><span>01</span>Problem Space</div>
     <div class="sec-capability">Capability demonstrated → Problem framing &amp; spatial systems thinking</div>
     <h2>The information integration problem</h2>
@@ -284,14 +356,20 @@
   </div>
 
   <!-- ══ 02 DATA ARCHITECTURE ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-02">
     <div class="sec-tag"><span>02</span>System Architecture</div>
     <div class="sec-capability">Capability demonstrated → Data abstraction layer design &amp; BC ecosystem literacy</div>
     <h2>Three-layer data architecture</h2>
-    <div class="sec-body">
+    <div class="sec-preview">
       <p>The framework is built on a three-layer architecture: <strong>source data → thematic data library → atlas production</strong>. The library acts as the abstraction layer — isolating the production system from raw source variation, and making it possible to update a dataset or add a new site without touching the cartographic pipeline.</p>
-      <p>Datasets from BC Data Catalogue, TANTALIS, FWA, federal sources, and LiDAR flights were catalogued into a thematic data library organized by bioregional theme. This taxonomy <strong>defined the atlas structure</strong>, drove the cartographic template logic, and became the single source of truth across all 300+ map products.</p>
     </div>
+    <div class="expand-gate" id="gate-02">
+      <button class="expand-btn" onclick="toggleGate('gate-02')">
+        <span class="expand-btn-label">How the data architecture was designed →</span>
+        <span class="expand-btn-icon">↓</span>
+      </button>
+      <div class="expand-body">
+        <div class="expand-inner">
     <div class="vis-wrap" style="margin-bottom:20px;">
       <div class="vis-label">System Layers <span>// data abstraction architecture</span></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
@@ -315,46 +393,68 @@
       <div class="tax-root">Bioregional Spatial Intelligence Framework — Data Library</div>
       <div class="tax-themes" id="taxonomy"></div>
     </div>
-  </div>
+        </div><!-- /expand-inner -->
+      </div><!-- /expand-body -->
+    </div><!-- /expand-gate gate-02 -->
+  </div><!-- /sec-02 -->
 
   <!-- ══ 03 WORKFLOW ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-03">
     <div class="sec-tag"><span>03</span>Production System</div>
     <div class="sec-capability">Capability demonstrated → GIS production pipeline design &amp; repeatability</div>
     <h2>Designed for repeatability and modularity</h2>
-    <div class="sec-body">
-      <p>A repeatable GIS production workflow was designed to integrate provincial datasets, LiDAR analysis, and automated atlas generation from a single data library. ArcGIS Pro Map Series (Data Driven Pages) drove cartographic output — once the template and symbology were configured, the same layout engine generated maps for every site automatically.</p>
-      <p>The pipeline was built modularly: LiDAR terrain analysis is one independent module, cartographic production is another. Each can be updated or re-run without disrupting the rest. <strong>Adding a new study site requires only updating the data library</strong> — the entire production pipeline re-runs unchanged.</p>
+    <div class="sec-preview">
+      <p>A repeatable GIS production workflow was designed to integrate provincial datasets, LiDAR analysis, and automated atlas generation from a single data library. <strong>Adding a new study site requires only updating the data library</strong> — the entire production pipeline re-runs unchanged.</p>
     </div>
-    <div class="tech-stack">
-      <span class="tech-pill">ArcGIS Pro</span>
-      <span class="tech-pill">Map Series / Data Driven Pages</span>
-      <span class="tech-pill">Python / ArcPy</span>
-      <span class="tech-pill">R / lidR</span>
-      <span class="tech-pill">BC Data Catalogue</span>
-      <span class="tech-pill">TANTALIS</span>
-    </div>
-    <div class="vis-wrap">
-      <div class="vis-label">Production Pipeline <span>// modular end-to-end</span></div>
-      <div class="pipeline-wrap">
-        <div class="pipeline" id="pipeline"></div>
-      </div>
+    <div class="expand-gate" id="gate-03">
+      <button class="expand-btn" onclick="toggleGate('gate-03')">
+        <span class="expand-btn-label">See the production pipeline design →</span>
+        <span class="expand-btn-icon">↓</span>
+      </button>
+      <div class="expand-body"><div class="expand-inner">
+        <div class="sec-body" style="margin-bottom:20px;">
+          <p>ArcGIS Pro Map Series (Data Driven Pages) drove cartographic output — once the template and symbology were configured, the same layout engine generated maps for every site automatically.</p>
+          <p>The pipeline was built modularly: LiDAR terrain analysis is one independent module, cartographic production is another. Each can be updated or re-run without disrupting the rest.</p>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-pill">ArcGIS Pro</span>
+          <span class="tech-pill">Map Series / Data Driven Pages</span>
+          <span class="tech-pill">Python / ArcPy</span>
+          <span class="tech-pill">R / lidR</span>
+          <span class="tech-pill">BC Data Catalogue</span>
+          <span class="tech-pill">TANTALIS</span>
+        </div>
+        <div class="vis-wrap">
+          <div class="vis-label">Production Pipeline <span>// modular end-to-end</span></div>
+          <div class="pipeline-wrap">
+            <div class="pipeline" id="pipeline"></div>
+          </div>
+        </div>
+      </div></div>
     </div>
   </div>
 
   <!-- ══ 04 LIDAR AUTOMATION ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-04">
     <div class="sec-tag"><span>04</span>LiDAR Automation</div>
     <div class="sec-capability">Capability demonstrated → Computational GIS &amp; automated terrain analysis</div>
     <h2>Automating the hydrology theme</h2>
-    <div class="sec-body">
-      <p>The hydrology and terrain theme required surface-derived products (DTM, DSM, CHM, slope, aspect, hillshade) and hydrological analysis outputs (stream networks, watersheds, pour points) — all generated from raw LiDAR point clouds.</p>
-      <p>An <strong>R script using <code style="font-family:'DM Mono',monospace;color:var(--accent2)">lidR</code></strong> handled point cloud normalization and surface derivation. A <strong>Python script</strong> ran hydrological analysis and fed results into a <code style="font-family:'DM Mono',monospace;color:var(--accent2)">folium</code> map for inline QA visualization — so outputs could be verified without opening GIS software between runs.</p>
+    <div class="sec-preview">
+      <p>The hydrology and terrain theme required surface-derived products (DTM, DSM, CHM, slope, aspect, hillshade) and hydrological analysis outputs — all generated from raw LiDAR point clouds via an automated R + Python pipeline.</p>
     </div>
-    <div class="callout">
-      <strong>Why this matters at scale</strong>
-      <p>Manual terrain and hydrology analysis for 20+ sites would have taken weeks. Automating the pipeline reduced per-site processing to a single script execution — and the embedded visual QA caught classification errors before they propagated into the atlas.</p>
-    </div>
+    <div class="expand-gate" id="gate-04">
+      <button class="expand-btn" onclick="toggleGate('gate-04')">
+        <span class="expand-btn-label">See the LiDAR automation pipeline →</span>
+        <span class="expand-btn-icon">↓</span>
+      </button>
+      <div class="expand-body"><div class="expand-inner">
+        <div class="sec-body" style="margin-bottom:20px;">
+          <p>An <strong>R script using <code style="font-family:'DM Mono',monospace;color:var(--accent2)">lidR</code></strong> handled point cloud normalization and surface derivation. A <strong>Python script</strong> ran hydrological analysis and fed results into a <code style="font-family:'DM Mono',monospace;color:var(--accent2)">folium</code> map for inline QA visualization — so outputs could be verified without opening GIS software between runs.</p>
+        </div>
+        <div class="callout">
+          <strong>Why this matters at scale</strong>
+          <p>Manual terrain and hydrology analysis for 20+ sites would have taken weeks. Automating the pipeline reduced per-site processing to a single script execution — and the embedded visual QA caught classification errors before they propagated into the atlas.</p>
+        </div>
     <div class="vis-wrap" style="margin-top:28px;">
       <div class="vis-label">LiDAR → Hydrology Pipeline <span>// click any stage to expand functions</span></div>
       <div class="lidar-wrap">
@@ -362,30 +462,42 @@
         <div class="lidar-hint">click a stage to expand ↑</div>
       </div>
     </div>
-  </div>
+      </div></div><!-- /expand-inner /expand-body -->
+    </div><!-- /expand-gate gate-04 -->
+  </div><!-- /sec-04 -->
 
   <!-- ══ 05 BC DATA MAP ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-05">
     <div class="sec-tag"><span>05</span>Data in Context</div>
     <div class="sec-capability">Capability demonstrated → Cartographic judgment &amp; BC data ecosystem literacy</div>
     <h2>BC open data — atlas layer groups</h2>
     <div class="sec-body">
-      <p>The atlas drew from BC's provincial spatial data infrastructure — datasets organized by the same theme groups used in the atlas. The map below shows <strong>live BC government open data</strong> via WMS, grouped and toggled by atlas theme.</p>
+      <p>The atlas drew from BC's provincial spatial data infrastructure — datasets organized by the same theme groups used in the atlas. The map below shows <strong>live BC government open data</strong> via WMS. Click a theme group in the legend to toggle it on or off. Click any feature on the map to identify it.</p>
       <p>The actual study area is confidential. Use the location controls to explore the same layer structure applied to any BC area of interest.</p>
     </div>
 
     <div class="vis-wrap">
-      <div class="vis-label">BC Open Data — Atlas Layer Groups <span>// live WMS · openmaps.gov.bc.ca</span></div>
+      <div class="vis-label">BC Open Data — Atlas Layer Groups <span>// live WMS · click legend to toggle</span></div>
       <div class="map-outer">
         <!-- MAP CANVAS -->
         <div class="map-canvas-col">
           <div id="bc-map"></div>
           <div class="zoom-toast" id="zoom-toast"></div>
+          <!-- ZOOM + SCALE DISPLAY -->
+          <div class="map-zoom-bar" id="map-zoom-bar">
+            <span class="zoom-bar-zoom" id="zb-zoom">z—</span>
+            <span class="zoom-bar-sep">·</span>
+            <span class="zoom-bar-scale" id="zb-scale">1:—</span>
+          </div>
+          <!-- FULLSCREEN BUTTON -->
+          <button class="map-fullscreen-btn" id="map-fs-btn" title="Expand map" onclick="toggleMapFullscreen()">⛶</button>
+          <!-- INSET OVERVIEW MAP -->
+          <div id="bc-inset" title="Location in BC"></div>
         </div>
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR — legend IS the toggle -->
         <div class="map-sidebar">
           <div class="map-disclaimer">
-            <span>Note:</span> Study area confidential. Explore any BC region — same layers, different place.
+            <span>Note:</span> Study area confidential. Explore any BC region.
           </div>
           <div class="map-sidebar-scroll">
             <div class="map-sidebar-section">
@@ -414,15 +526,10 @@
                 </select>
               </div>
             </div>
-            <div class="map-sidebar-section">
-              <div class="map-sidebar-title">Theme Layers</div>
-              <div class="layer-list" id="layer-list"></div>
-            </div>
-            <div class="map-sidebar-section" style="border-bottom:none;">
-              <div class="map-sidebar-title">Legend</div>
-              <div class="map-legend-wrap" id="map-legend-wrap">
-                <div class="legend-empty" id="legend-empty">Turn on a layer to see legend</div>
-              </div>
+            <!-- LEGEND = TOGGLE CONTROL -->
+            <div class="legend-section">
+              <div class="legend-section-title">Layers &amp; Legend</div>
+              <div id="legend-controls"></div>
             </div>
           </div>
         </div>
@@ -431,15 +538,23 @@
   </div>
 
   <!-- ══ 06 OUTCOME ══ -->
-  <div class="section reveal">
+  <div class="section reveal" id="sec-06">
     <div class="sec-tag"><span>06</span>System Capability</div>
     <div class="sec-capability">Capability demonstrated → Spatial information infrastructure design</div>
     <h2>What the framework delivers</h2>
-    <div class="sec-body">
-      <p>The project established a scalable framework for synthesizing environmental, cultural, and resource datasets into a consistent bioregional atlas. The atlas enables <strong>rapid comparison of ecological systems, resource development context, and planning designations across sites</strong> — turning a weeks-long manual process into a reproducible spatial intelligence product.</p>
-      <p>The deliverable is not a set of maps. It is a <strong>spatial information infrastructure</strong> — a system that integrates 40+ provincial datasets across environmental, cultural, and economic domains, combines LiDAR-derived terrain analysis with thematic provincial data, and supports consistent multi-theme atlas generation across multiple regions without rebuilding the workflow.</p>
+    <div class="sec-preview">
+      <p>The project established a scalable framework for synthesizing environmental, cultural, and resource datasets into a consistent bioregional atlas — turning a weeks-long manual process into a reproducible spatial intelligence product.</p>
     </div>
-    <div class="decision-grid">
+    <div class="expand-gate" id="gate-06">
+      <button class="expand-btn" onclick="toggleGate('gate-06')">
+        <span class="expand-btn-label">See full system capability breakdown →</span>
+        <span class="expand-btn-icon">↓</span>
+      </button>
+      <div class="expand-body"><div class="expand-inner">
+        <div class="sec-body" style="margin-bottom:20px;">
+          <p>The deliverable is not a set of maps. It is a <strong>spatial information infrastructure</strong> — a system that integrates 40+ provincial datasets across environmental, cultural, and economic domains, combines LiDAR-derived terrain analysis with thematic provincial data, and supports consistent multi-theme atlas generation across multiple regions without rebuilding the workflow.</p>
+        </div>
+      <div class="decision-grid">
       <div class="decision-card">
         <div class="dc-type">Data Integration</div>
         <div class="dc-items">
@@ -465,7 +580,9 @@
         </div>
       </div>
     </div>
-  </div>
+      </div></div><!-- /expand-inner /expand-body -->
+    </div><!-- /expand-gate gate-06 -->
+  </div><!-- /sec-06 -->
 
   <div class="case-nav">
     <a href="airport-ols.html">← Airport OLS</a>
@@ -473,6 +590,7 @@
   </div>
 
 </div><!-- /page -->
+</div><!-- /layout -->
 
 <script>
 /* ════════════════════════════════════════
@@ -706,37 +824,39 @@ var LIDAR_STAGES = [
 (function(){
   var WMS='https://openmaps.gov.bc.ca/geo/pub/wms';
 
+  // minZoom values calibrated from actual BC WMS rendering behaviour (user-verified):
+  // Physical layers require z12–13 to render; others verified against iMapBC scale thresholds
   var LAYER_GROUPS=[
-    {id:'physical', label:'Physical',       col:'#5b9bd5', minZoom:5,
+    {id:'physical', label:'Physical',       col:'#5b9bd5', minZoom:12,
      layers:[
-       {name:'FWA Stream Network', wms:'WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP',    type:'line', desc:'Freshwater Atlas stream lines — includes stream order, watershed code, and flow direction.'},
-       {name:'FWA Lakes & Wetlands',wms:'WHSE_BASEMAPPING.FWA_LAKES_POLY',           type:'poly', desc:'Freshwater Atlas lake polygons — named waterbodies with area and hydrological attributes.'},
-       {name:'Watershed Groups',   wms:'WHSE_BASEMAPPING.FWA_WATERSHED_GROUPS_POLY', type:'poly', desc:'Major watershed group boundaries used for hydrological analysis and reporting units.'},
+       {wms:'WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP',    wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP/ows',    minZoom:13},
+       {wms:'WHSE_BASEMAPPING.FWA_WETLANDS_POLY',          wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_WETLANDS_POLY/ows',          minZoom:12},
+       {wms:'WHSE_BASEMAPPING.FWA_WATERSHEDS_POLY',        wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.FWA_WATERSHEDS_POLY/ows',        minZoom:12},
      ]},
-    {id:'natural',  label:'Natural Env.',   col:'#6dbf8a', minZoom:7,
+    {id:'natural',  label:'Natural Env.',   col:'#6dbf8a', minZoom:8,
      layers:[
-       {name:'BEC Zones',  wms:'WHSE_FOREST_VEGETATION.BEC_BIOGEOCLIMATIC_POLY',       type:'poly', desc:'Biogeoclimatic Ecosystem Classification zones — defines climate, vegetation, and ecological site series.'},
-       {name:'Old Growth', wms:'WHSE_FOREST_VEGETATION.OGSR_TAP_PRIORITY_DEF_AREA_SP', type:'poly', desc:'Old Growth Strategic Review deferral areas — priority old growth stands recommended for interim protection.'},
+       {wms:'WHSE_WILDLIFE_MANAGEMENT.WCP_WILDLIFE_HABITAT_AREA_POLY',  wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_WILDLIFE_MANAGEMENT.WCP_WILDLIFE_HABITAT_AREA_POLY/ows', minZoom:8},
+       {wms:'WHSE_LAND_USE_PLANNING.RMP_OGMA_LEGAL_CURRENT_SVW',        wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_LAND_USE_PLANNING.RMP_OGMA_LEGAL_CURRENT_SVW/ows',       minZoom:8},
      ]},
-    {id:'resources',label:'Resources',      col:'#e85d3a', minZoom:8,
+    {id:'resources',label:'Resources',      col:'#e85d3a', minZoom:6,
      layers:[
-       {name:'TSA Boundaries',  wms:'WHSE_ADMIN_BOUNDARIES.FADM_TSA',              type:'poly', desc:'Timber Supply Areas — administrative units for timber harvest planning and AAC (Annual Allowable Cut) determination.'},
-       {name:'Mineral Tenure',  wms:'WHSE_MINERAL_TENURE.MTA_ACQUIRED_TENURE_SVW', type:'poly', desc:'Active mineral and placer mining tenures from TANTALIS — shows exploration and mining claims.'},
+       {wms:'WHSE_ADMIN_BOUNDARIES.FADM_TSA',              wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_ADMIN_BOUNDARIES.FADM_TSA/ows',              minZoom:6},
+       {wms:'WHSE_MINERAL_TENURE.MTA_ACQUIRED_TENURE_SVW', wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_MINERAL_TENURE.MTA_ACQUIRED_TENURE_SVW/ows', minZoom:9},
      ]},
     {id:'cultural', label:'Cultural',       col:'#c8a87a', minZoom:7,
      layers:[
-       {name:'First Nations Reserves', wms:'WHSE_ADMIN_BOUNDARIES.CLAB_INDIAN_RESERVES', type:'poly', desc:'Indian Reserve boundaries from the National Geographic Database — land set aside under the Indian Act.'},
-       {name:'TANTALIS Crown Land',    wms:'WHSE_TANTALIS.TA_CROWN_LEASES_SVW',           type:'poly', desc:'Crown land leases and licences from TANTALIS — shows long-term disposition of provincial Crown land.'},
+       {wms:'WHSE_ADMIN_BOUNDARIES.ADM_INDIAN_RESERVES_BANDS_SP', wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_ADMIN_BOUNDARIES.ADM_INDIAN_RESERVES_BANDS_SP/ows', minZoom:7},
+       {wms:'WHSE_TANTALIS.TA_CONSERVANCY_AREAS_SVW',             wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_TANTALIS.TA_CONSERVANCY_AREAS_SVW/ows',             minZoom:7},
      ]},
-    {id:'infra',    label:'Infrastructure', col:'#9b8fc4', minZoom:9,
+    {id:'infra',    label:'Infrastructure', col:'#9b8fc4', minZoom:10,
      layers:[
-       {name:'Digital Road Atlas',  wms:'WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP',            type:'line', desc:'BC Digital Road Atlas — classified road network including forest service roads, highways, and resource roads.'},
-       {name:'Transmission Lines',  wms:'WHSE_IMAGERY_AND_BASE_MAPS.TRIM_EBM_ELEC_TRANSMISSION_L', type:'line', desc:'Electrical transmission infrastructure from BC TRIM — high-voltage transmission corridors.'},
+       {wms:'WHSE_BASEMAPPING.GBA_TRANSMISSION_LINES_SP',   wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.GBA_TRANSMISSION_LINES_SP/ows',   minZoom:10},
+       {wms:'WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP', wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows', minZoom:13},
      ]},
-    {id:'desig',    label:'Designations',   col:'#f0a060', minZoom:6,
+    {id:'desig',    label:'Designations',   col:'#f0a060', minZoom:7,
      layers:[
-       {name:'Protected Areas', wms:'WHSE_TANTALIS.TA_PARK_ECORES_PA_SVW',        type:'poly', desc:'Parks and protected areas under the Park Act and Environment & Land Use Act — includes Provincial Parks, Ecological Reserves, and Protected Areas.'},
-       {name:'ALR',             wms:'WHSE_LEGAL_ADMIN_BOUNDARIES.OATS_ALR_POLYS', type:'poly', desc:'Agricultural Land Reserve boundaries — land protected from non-agricultural use under the Agricultural Land Commission Act.'},
+       {wms:'WHSE_TANTALIS.TA_PARK_ECORES_PA_SVW',        wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_TANTALIS.TA_PARK_ECORES_PA_SVW/ows',        minZoom:7},
+       {wms:'WHSE_LEGAL_ADMIN_BOUNDARIES.OATS_ALR_POLYS', wmsUrl:'https://openmaps.gov.bc.ca/geo/pub/WHSE_LEGAL_ADMIN_BOUNDARIES.OATS_ALR_POLYS/ows', minZoom:7},
      ]},
   ];
 
@@ -750,76 +870,103 @@ var LIDAR_STAGES = [
   // Map init
   var map=L.map('bc-map',{zoomControl:true,attributionControl:false});
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd'}).addTo(map);
-  map.setView([54.5,-124.5],5);
+  map.setView([49.95,-123.15],12);
 
   var activeGroups={};
   var leafletLayers={};
 
-  // Build toggle buttons
-  var listEl=document.getElementById('layer-list');
-  LAYER_GROUPS.forEach(function(g){
-    activeGroups[g.id]=false;
-    var btn=document.createElement('button');
-    btn.className='layer-toggle';
-    btn.id='btn-'+g.id;
-    btn.innerHTML='<span class="l-dot" style="background:'+g.col+';border:1.5px solid '+g.col+'"></span>'+g.label;
-    btn.addEventListener('click',function(){toggleGroup(g.id);});
-    listEl.appendChild(btn);
-  });
+  function legendGraphicUrl(wmsUrl, layerName){
+    return wmsUrl + '?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic' +
+      '&LAYER=' + encodeURIComponent(layerName) +
+      '&FORMAT=image%2Fpng&TRANSPARENT=true&LEGEND_OPTIONS=fontAntiAliasing:true;fontSize:9;bgColor:0x1a1410;fontColor:0xd4b8ad';
+  }
 
-  // ── Dynamic legend ──
-  var legendWrap=document.getElementById('map-legend-wrap');
-  var legendEmpty=document.getElementById('legend-empty');
-  // Pre-build legend groups (hidden by default)
+
+  // Build GetLegendGraphic URL for a single layer
+  function layerLegendUrl(l){
+    return l.wmsUrl + '?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic' +
+      '&LAYER=' + encodeURIComponent(l.wms) +
+      '&FORMAT=image%2Fpng&TRANSPARENT=true' +
+      '&LEGEND_OPTIONS=fontAntiAliasing:true;fontSize:10;' +
+      'bgColor:0x1a1410;fontColor:0xd4b8ad;labelMargin:4;dpi:120';
+  }
+
+  // ── Build legend = toggle control ──
+  var legendControlsEl = document.getElementById('legend-controls');
   LAYER_GROUPS.forEach(function(g){
-    var grp=document.createElement('div');
-    grp.className='legend-group';
-    grp.id='leg-'+g.id;
-    var hd=document.createElement('div');
-    hd.className='legend-group-hd';
-    hd.style.color=g.col;
-    hd.innerHTML='<span class="l-swatch" style="background:'+g.col+'"></span>'+g.label;
-    grp.appendChild(hd);
+    activeGroups[g.id] = false;
+    var grpEl = document.createElement('div');
+    grpEl.className = 'leg-group';
+    grpEl.id = 'leggrp-' + g.id;
+
+    // Header row — label + on/off status
+    var hdEl = document.createElement('div');
+    hdEl.className = 'leg-group-hd';
+    var dot = document.createElement('span');
+    dot.className = 'leg-dot';
+    dot.style.background = g.col;
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'leg-group-label';
+    labelSpan.style.color = g.col;
+    labelSpan.textContent = g.label;
+    var statusSpan = document.createElement('span');
+    statusSpan.className = 'leg-group-status';
+    statusSpan.textContent = 'off';
+    hdEl.appendChild(dot);
+    hdEl.appendChild(labelSpan);
+    hdEl.appendChild(statusSpan);
+    hdEl.addEventListener('click', function(){ toggleGroup(g.id); });
+    grpEl.appendChild(hdEl);
+
+    // Legend body — one GetLegendGraphic <img> per layer, stacked
+    var bodyEl = document.createElement('div');
+    bodyEl.className = 'leg-layers';
+    bodyEl.id = 'leglayers-' + g.id;
+
     g.layers.forEach(function(l){
-      var li=document.createElement('div');
-      li.className='legend-item';
-      li.id='leg-item-'+g.id+'-'+l.name.replace(/\s/g,'_');
-      var sym = l.type==='line'
-        ? '<div class="legend-swatch" style="background:'+g.col+'"></div>'
-        : '<div class="legend-poly" style="border-color:'+g.col+';background:'+g.col+'22"></div>';
-      li.innerHTML=sym+'<span>'+l.name+'</span><span class="legend-zoom-tag" id="leg-zoom-'+g.id+'_'+l.name.replace(/\s/g,'_')+'"></span>';
-      grp.appendChild(li);
+      var img = document.createElement('img');
+      img.className = 'leg-wms-img';
+      img.src = layerLegendUrl(l);
+      img.alt = l.wms;
+      img.onerror = function(){
+        // Fallback swatch if WMS legend unavailable
+        var fb = document.createElement('span');
+        fb.style.cssText = 'display:flex;align-items:center;gap:6px;padding:3px 8px;';
+        fb.innerHTML = '<span style="width:14px;height:3px;background:' + g.col + ';border-radius:1px;flex-shrink:0;display:inline-block;"></span>';
+        img.parentNode && img.parentNode.replaceChild(fb, img);
+      };
+      bodyEl.appendChild(img);
     });
-    legendWrap.appendChild(grp);
+
+    // Zoom hint (shown when active but zoomed out too far)
+    var zoomHint = document.createElement('div');
+    zoomHint.className = 'leg-zoom-hint';
+    zoomHint.id = 'lzhint-' + g.id;
+    bodyEl.appendChild(zoomHint);
+    grpEl.appendChild(bodyEl);
+    legendControlsEl.appendChild(grpEl);
   });
 
-  function refreshLegend(){
-    var zoom=map.getZoom();
-    var anyOn=false;
+function refreshLegend(){
+    var zoom = map.getZoom();
     LAYER_GROUPS.forEach(function(g){
-      var grp=document.getElementById('leg-'+g.id);
-      if(!grp) return;
-      if(activeGroups[g.id]){
-        anyOn=true;
-        grp.classList.add('visible');
-        var needZoom=zoom<g.minZoom;
-        g.layers.forEach(function(l){
-          var li=document.getElementById('leg-item-'+g.id+'-'+l.name.replace(/\s/g,'_'));
-          var tag=document.getElementById('leg-zoom-'+g.id+'_'+l.name.replace(/\s/g,'_'));
-          if(!li) return;
-          if(needZoom){
-            li.classList.add('zoom-dim');
-            if(tag) tag.textContent='zoom '+g.minZoom+'+';
-          } else {
-            li.classList.remove('zoom-dim');
-            if(tag) tag.textContent='';
-          }
-        });
+      if(!activeGroups[g.id]) return;
+      var hint = document.getElementById('lzhint-'+g.id);
+      if(!hint) return;
+      var dimmed = g.layers.filter(function(l){ return zoom < l.minZoom; });
+      if(dimmed.length === g.layers.length){
+        var needed = Math.min.apply(null, g.layers.map(function(l){ return l.minZoom; }));
+        hint.textContent = 'Zoom to ' + needed + '+ to see layers';
+        hint.style.display = 'block';
+      } else if(dimmed.length > 0){
+        var needed = Math.min.apply(null, dimmed.map(function(l){ return l.minZoom; }));
+        hint.textContent = 'Some layers visible at zoom ' + needed + '+';
+        hint.style.display = 'block';
       } else {
-        grp.classList.remove('visible');
+        hint.textContent = '';
+        hint.style.display = 'none';
       }
     });
-    legendEmpty.style.display=anyOn?'none':'block';
   }
 
   // ── Zoom toast ──
@@ -829,16 +976,17 @@ var LIDAR_STAGES = [
     var zoom=map.getZoom();
     toastContainer.innerHTML='';
     LAYER_GROUPS.forEach(function(g){
-      if(activeGroups[g.id] && zoom<g.minZoom){
+      if(!activeGroups[g.id]) return;
+      var minLayer = Math.min.apply(null, g.layers.map(function(l){ return l.minZoom; }));
+      if(zoom < minLayer){
         var item=document.createElement('div');
         item.className='zoom-toast-item';
         item.style.borderColor=g.col+'66';
         item.innerHTML=
           '<span class="zoom-toast-dot" style="background:'+g.col+'"></span>'+
           '<span class="zoom-toast-msg">'+g.label+'</span>'+
-          '<span class="zoom-toast-zoom">needs zoom '+g.minZoom+'+ (now '+Math.round(zoom)+')</span>';
+          '<span class="zoom-toast-zoom">needs zoom '+minLayer+'+ (now '+Math.round(zoom)+')</span>';
         toastContainer.appendChild(item);
-        // Animate in
         setTimeout(function(el){el.classList.add('show');}(item), 20);
       }
     });
@@ -850,23 +998,27 @@ var LIDAR_STAGES = [
   });
 
   function toggleGroup(id){
-    activeGroups[id]=!activeGroups[id];
-    document.getElementById('btn-'+id).classList.toggle('on',activeGroups[id]);
-    var grp=LAYER_GROUPS.find(function(g){return g.id===id;});
+    activeGroups[id] = !activeGroups[id];
+    var grpEl   = document.getElementById('leggrp-'+id);
+    var statusEl = grpEl ? grpEl.querySelector('.leg-group-status') : null;
+    if(grpEl)    grpEl.classList.toggle('on', activeGroups[id]);
+    if(statusEl) statusEl.textContent = activeGroups[id] ? '' : 'off';
+
+    var grp = LAYER_GROUPS.find(function(g){ return g.id===id; });
     if(!grp) return;
     if(activeGroups[id]){
       grp.layers.forEach(function(l){
-        var key=id+'_'+l.name;
+        var key = id+'_'+l.wms;
         if(!leafletLayers[key]){
-          leafletLayers[key]=L.tileLayer.wms(WMS,{
-            layers:l.wms,format:'image/png',transparent:true,version:'1.1.1',opacity:0.72,
+          leafletLayers[key] = L.tileLayer.wms(l.wmsUrl,{
+            layers:l.wms, format:'image/png', transparent:true, version:'1.1.1', opacity:0.72,
           });
         }
         leafletLayers[key].addTo(map);
       });
     } else {
       grp.layers.forEach(function(l){
-        var key=id+'_'+l.name;
+        var key = id+'_'+l.wms;
         if(leafletLayers[key]) map.removeLayer(leafletLayers[key]);
       });
     }
@@ -932,162 +1084,132 @@ var LIDAR_STAGES = [
   }
   function setStatus(msg){document.getElementById('loc-status').textContent=msg;}
 
-  // ── WMS GetFeatureInfo identify ──
-  var identifyPopup=null;
-
-  // Build flat list of all active layers for identify
-  function getActiveLayersList(){
-    var active=[];
-    LAYER_GROUPS.forEach(function(g){
-      if(activeGroups[g.id]){
-        g.layers.forEach(function(l){ active.push({group:g, layer:l}); });
-      }
-    });
-    return active;
-  }
-
-  function showIdentifyPopup(latlng, content){
-    if(identifyPopup){ identifyPopup.remove(); identifyPopup=null; }
-    var container=document.createElement('div');
-    container.className='identify-popup';
-    container.innerHTML=content;
-    container.querySelector('.identify-popup-close').addEventListener('click',function(){
-      container.remove(); identifyPopup=null;
-    });
-    identifyPopup=L.popup({
-      closeButton:false, className:'', maxWidth:300,
-      autoPan:true, offset:[0,-4]
-    })
-    .setLatLng(latlng)
-    .setContent(container)
-    .openOn(map);
-  }
-
-  function buildPopupRows(props, groupCol, layerName){
-    // Filter out geometry/internal fields, show meaningful ones
-    var skip=/^(objectid|shape|geometry|wkb_geometry|gml_id|se_anno|fid)$/i;
-    var rows=Object.keys(props)
-      .filter(function(k){ return !skip.test(k) && props[k]!==null && props[k]!==''; })
-      .slice(0,8)
-      .map(function(k){
-        return '<div class="identify-popup-row">'+
-          '<span class="identify-popup-key">'+k.toLowerCase().replace(/_/g,' ')+'</span>'+
-          '<span class="identify-popup-val">'+props[k]+'</span>'+
-        '</div>';
-      }).join('');
-    return rows || null;
-  }
-
-  map.on('click', function(e){
-    var activeLayers=getActiveLayersList();
-    if(!activeLayers.length) return;
-
-    var zoom=map.getZoom();
-    var size=map.getSize();
-    var point=map.latLngToContainerPoint(e.latlng);
-    var bounds=map.getBounds();
-    var bbox=[bounds.getWest(),bounds.getSouth(),bounds.getEast(),bounds.getNorth()].join(',');
-
-    // Check at least one active layer is at valid zoom
-    var queryable=activeLayers.filter(function(a){ return zoom>=a.group.minZoom; });
-    if(!queryable.length){
-      var g=activeLayers[0].group;
-      showIdentifyPopup(e.latlng,
-        '<div class="identify-popup-hd">'+
-          '<span class="identify-popup-title" style="color:'+g.col+'">'+g.label+'</span>'+
-          '<button class="identify-popup-close">×</button>'+
-        '</div>'+
-        '<div class="identify-no-data">Zoom in to zoom '+g.minZoom+'+ to identify features</div>'
-      );
-      return;
-    }
-
-    // Show loading state immediately
-    var firstGroup=queryable[0].group;
-    showIdentifyPopup(e.latlng,
-      '<div class="identify-popup-hd">'+
-        '<span class="identify-popup-title" style="color:'+firstGroup.col+'">Identifying…</span>'+
-        '<button class="identify-popup-close">×</button>'+
-      '</div>'+
-      '<div class="identify-loading">querying WMS…</div>'
-    );
-
-    // Build combined WMS layer string — query all active+zoomable layers together
-    var layerNames=queryable.map(function(a){return a.layer.wms;}).join(',');
-    var url=WMS+'?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo'+
-      '&LAYERS='+encodeURIComponent(layerNames)+
-      '&QUERY_LAYERS='+encodeURIComponent(layerNames)+
-      '&STYLES=&BBOX='+bbox+
-      '&WIDTH='+size.x+'&HEIGHT='+size.y+
-      '&SRS=EPSG:4326&X='+Math.round(point.x)+'&Y='+Math.round(point.y)+
-      '&INFO_FORMAT=application/json&FEATURE_COUNT=5';
-
-    fetch(url)
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        if(!data.features || !data.features.length){
-          // Nothing found — show layer description from our metadata
-          var hd='<div class="identify-popup-hd">'+
-            '<span class="identify-popup-title" style="color:'+firstGroup.col+'">'+queryable[0].layer.name+'</span>'+
-            '<button class="identify-popup-close">×</button>'+
-          '</div>';
-          var body='<div class="identify-popup-body">'+
-            '<div class="identify-popup-desc">'+queryable[0].layer.desc+'</div>'+
-            '<div class="identify-popup-row"><span class="identify-popup-key">source</span><span class="identify-popup-val">'+queryable[0].layer.wms+'</span></div>'+
-          '</div>';
-          showIdentifyPopup(e.latlng, hd+body);
-          return;
-        }
-
-        // Build popup from first feature
-        var feat=data.features[0];
-        var props=feat.properties||{};
-        // Find which group this layer belongs to
-        var matchedGroup=firstGroup, matchedLayer=queryable[0].layer;
-        var typeName=(feat.id||'').split('.')[0];
-        queryable.forEach(function(a){
-          if(a.layer.wms.toLowerCase().includes(typeName.toLowerCase())){
-            matchedGroup=a.group; matchedLayer=a.layer;
-          }
-        });
-
-        var rows=buildPopupRows(props, matchedGroup.col, matchedLayer.name);
-        var hd='<div class="identify-popup-hd">'+
-          '<span class="identify-popup-title" style="color:'+matchedGroup.col+'">'+matchedLayer.name+'</span>'+
-          '<button class="identify-popup-close">×</button>'+
-        '</div>';
-        var body='<div class="identify-popup-body">'+
-          '<div class="identify-popup-desc">'+matchedLayer.desc+'</div>'+
-          (rows?'<div style="border-top:1px solid var(--border);margin-top:6px;padding-top:6px;">'+rows+'</div>':'')+
-        '</div>';
-        showIdentifyPopup(e.latlng, hd+body);
-      })
-      .catch(function(){
-        // Fallback — show layer metadata only
-        var g=queryable[0].group, l=queryable[0].layer;
-        showIdentifyPopup(e.latlng,
-          '<div class="identify-popup-hd">'+
-            '<span class="identify-popup-title" style="color:'+g.col+'">'+l.name+'</span>'+
-            '<button class="identify-popup-close">×</button>'+
-          '</div>'+
-          '<div class="identify-popup-body">'+
-            '<div class="identify-popup-desc">'+l.desc+'</div>'+
-            '<div class="identify-popup-row"><span class="identify-popup-key">source</span><span class="identify-popup-val">openmaps.gov.bc.ca</span></div>'+
-          '</div>'
-        );
-      });
-  });
-
-  // Cursor hint when layers are on
-  map.on('mousemove', function(){
-    var active=getActiveLayersList();
-    map.getContainer().style.cursor=active.length?'crosshair':'';
-  });
+  // ── Identify: fixed div overlay (not L.popup to avoid event conflicts) ──
 
   // Auto-load physical layer
-  setTimeout(function(){toggleGroup('physical');},600);
+  setTimeout(function(){ toggleGroup('physical'); }, 600);
+
+  // ── INSET OVERVIEW MAP ──
+  var insetMap = L.map('bc-inset', {
+    zoomControl:false, attributionControl:false,
+    dragging:false, scrollWheelZoom:false, doubleClickZoom:false,
+    touchZoom:false, keyboard:false, boxZoom:false
+  }).setView([54.5, -124.5], 4);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'', maxZoom:7
+  }).addTo(insetMap);
+
+  // Viewport rectangle — shows main map bounds on the inset
+  var insetViewport = document.createElement('div');
+  insetViewport.className = 'inset-viewport';
+  document.getElementById('bc-inset').appendChild(insetViewport);
+
+  function updateInsetViewport(){
+    var bounds = map.getBounds();
+    var insetEl = document.getElementById('bc-inset');
+    var w = insetEl.offsetWidth, h = insetEl.offsetHeight;
+    // Convert main map bounds to inset pixel coords
+    var nw = insetMap.latLngToContainerPoint(bounds.getNorthWest());
+    var se = insetMap.latLngToContainerPoint(bounds.getSouthEast());
+    // Clamp to inset bounds
+    var x1 = Math.max(0, Math.min(w, nw.x));
+    var y1 = Math.max(0, Math.min(h, nw.y));
+    var x2 = Math.max(0, Math.min(w, se.x));
+    var y2 = Math.max(0, Math.min(h, se.y));
+    var rw = Math.max(4, x2 - x1);
+    var rh = Math.max(4, y2 - y1);
+    insetViewport.style.left   = x1 + 'px';
+    insetViewport.style.top    = y1 + 'px';
+    insetViewport.style.width  = rw + 'px';
+    insetViewport.style.height = rh + 'px';
+    insetViewport.style.display = 'block';
+  }
+
+  map.on('moveend zoomend', updateInsetViewport);
+  // Also update after inset tiles load (inset may not be ready immediately)
+  insetMap.on('load moveend', updateInsetViewport);
+  setTimeout(updateInsetViewport, 800);
+
+  // ── ZOOM + SCALE BAR ──
+  // Leaflet zoom → approximate scale denominator at mid-BC latitude (~54°N)
+  // Scale = (tile_size_px * 2^zoom * cos(lat) * earth_circ) / (tile_size_m * 2^zoom)
+  // Simplified: scale_denom = 559_082_264 * cos(lat_rad) / 2^zoom / devicePixelRatio
+  function updateZoomBar(){
+    var z = map.getZoom();
+    var lat = map.getCenter().lat;
+    var latRad = lat * Math.PI / 180;
+    var dpr = window.devicePixelRatio || 1;
+    var scaleDenom = Math.round(559082264 * Math.cos(latRad) / Math.pow(2, z) / dpr);
+    // Format scale denominator with thousands separator
+    var scaleStr = scaleDenom.toLocaleString('en-CA');
+    document.getElementById('zb-zoom').textContent = 'z' + Math.round(z * 10) / 10;
+    document.getElementById('zb-scale').textContent = '1 : ' + scaleStr;
+  }
+  map.on('zoomend moveend', updateZoomBar);
+  updateZoomBar();
+
+  // ── FULLSCREEN ──
+  window.toggleMapFullscreen = function(){
+    var sec = document.querySelector('.map-section');
+    var btn = document.getElementById('map-fs-btn');
+    var active = sec.classList.toggle('fs-active');
+    btn.textContent = active ? '✕' : '⛶';
+    btn.title = active ? 'Exit fullscreen' : 'Expand map';
+    setTimeout(function(){
+      map.invalidateSize();
+      insetMap.invalidateSize();
+      updateInsetViewport();
+      updateZoomBar();
+    }, 300);
+  };
+
 })();
 
+/* ════════════════════════════════════════
+   COLLAPSIBLE GATES
+════════════════════════════════════════ */
+window.toggleGate = function(id){
+  var gate = document.getElementById(id);
+  if(!gate) return;
+  gate.classList.toggle('open');
+  // Update TOC if section becomes visible
+  updateTOC();
+};
+
+/* ════════════════════════════════════════
+   TOC SCROLL SPY
+════════════════════════════════════════ */
+(function(){
+  var sections = ['sec-hero','sec-01','sec-02','sec-03','sec-04','sec-05','sec-06'];
+  var tocItems = document.querySelectorAll('.toc-item[data-sec]');
+
+  function updateTOC(){
+    var scrollY = window.scrollY + 100;
+    var current = sections[0];
+    sections.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el && el.getBoundingClientRect().top + window.scrollY - 100 <= scrollY){
+        current = id;
+      }
+    });
+    tocItems.forEach(function(item){
+      item.classList.toggle('active', item.getAttribute('data-sec') === current);
+    });
+  }
+  window.updateTOC = updateTOC;
+  window.addEventListener('scroll', updateTOC, {passive:true});
+  updateTOC();
+
+  // Smooth scroll on TOC click
+  tocItems.forEach(function(item){
+    item.addEventListener('click', function(e){
+      e.preventDefault();
+      var targetId = item.getAttribute('data-sec');
+      var target = document.getElementById(targetId);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+})();
 /* ════════════════════════════════════════
    SCROLL REVEAL
 ════════════════════════════════════════ */
@@ -1095,8 +1217,12 @@ var LIDAR_STAGES = [
   var els=document.querySelectorAll('.reveal');
   var obs=new IntersectionObserver(function(entries){
     entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});
-  },{threshold:0.06});
+  },{threshold:0.06,rootMargin:'0px 0px -40px 0px'});
   els.forEach(function(el){obs.observe(el);});
+  // Fallback: make visible after short delay in case observer misses
+  setTimeout(function(){
+    els.forEach(function(el){el.classList.add('visible');});
+  }, 400);
 })();
 </script>
 </body>
