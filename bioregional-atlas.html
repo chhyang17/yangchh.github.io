@@ -482,7 +482,6 @@
         <!-- MAP CANVAS -->
         <div class="map-canvas-col">
           <div id="bc-map"></div>
-          <div class="zoom-toast" id="zoom-toast"></div>
           <!-- ZOOM + SCALE DISPLAY -->
           <div class="map-zoom-bar" id="map-zoom-bar">
             <span class="zoom-bar-zoom" id="zb-zoom">z—</span>
@@ -504,7 +503,7 @@
               <div class="map-sidebar-title">View</div>
               <div class="map-view-btns">
                 <button class="map-view-btn active" onclick="setView('province')">BC Overview</button>
-                <button class="map-view-btn" onclick="setView('study')">Study Scale</button>
+                
               </div>
               <div class="loc-controls">
                 <button class="loc-btn" onclick="useGeolocation()"><span class="lb-icon">📍</span>My location</button>
@@ -970,27 +969,8 @@ function refreshLegend(){
   }
 
   // ── Zoom toast ──
-  var toastContainer=document.getElementById('zoom-toast');
 
-  function refreshToast(){
-    var zoom=map.getZoom();
-    toastContainer.innerHTML='';
-    LAYER_GROUPS.forEach(function(g){
-      if(!activeGroups[g.id]) return;
-      var minLayer = Math.min.apply(null, g.layers.map(function(l){ return l.minZoom; }));
-      if(zoom < minLayer){
-        var item=document.createElement('div');
-        item.className='zoom-toast-item';
-        item.style.borderColor=g.col+'66';
-        item.innerHTML=
-          '<span class="zoom-toast-dot" style="background:'+g.col+'"></span>'+
-          '<span class="zoom-toast-msg">'+g.label+'</span>'+
-          '<span class="zoom-toast-zoom">needs zoom '+minLayer+'+ (now '+Math.round(zoom)+')</span>';
-        toastContainer.appendChild(item);
-        setTimeout(function(el){el.classList.add('show');}(item), 20);
-      }
-    });
-  }
+  function refreshToast(){}
 
   map.on('zoomend', function(){
     refreshLegend();
@@ -1094,7 +1074,7 @@ function refreshLegend(){
     zoomControl:false, attributionControl:false,
     dragging:false, scrollWheelZoom:false, doubleClickZoom:false,
     touchZoom:false, keyboard:false, boxZoom:false
-  }).setView([54.5, -124.5], 4);
+  }).setView([54.5, -124.5], 3);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
     attribution:'', maxZoom:7
   }).addTo(insetMap);
