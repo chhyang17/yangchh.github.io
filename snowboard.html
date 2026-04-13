@@ -647,6 +647,69 @@ footer {
 .btn-fill:hover { background: #b83612; border-color: #b83612; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--border-m); }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── STRAVA PROFILE WIDGET ─── */
+.strava-cta-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 56px 64px;
+}
+.strava-cta-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--bg-off);
+  border: 1px solid var(--border-m);
+  border-top: 2px solid #FC4C02;
+  padding: 20px 32px;
+}
+.strava-cta-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.strava-logo-svg { width: 26px; height: 26px; flex-shrink: 0; }
+.strava-cta-name {
+  font-family: var(--syne);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.strava-cta-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.strava-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: #FC4C02;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid #FC4C02;
+  transition: background .16s, border-color .16s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.strava-cta-btn:hover { background: #e04000; border-color: #e04000; }
+@media (max-width: 768px) {
+  .strava-cta-wrap { padding: 0 16px 48px; }
+  .strava-cta-card { flex-direction: column; align-items: flex-start; gap: 16px; padding: 18px 20px; }
+  .strava-cta-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .strava-cta-wrap { padding: 0 8px 36px; }
+}
 </style>
 </head>
 <body>
@@ -1305,6 +1368,21 @@ footer {
   init();
   </script>
 
+<!-- STRAVA PROFILE WIDGET -->
+<div class="strava-cta-wrap">
+  <div class="strava-cta-card">
+    <div class="strava-cta-left">
+      <svg class="strava-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="#FC4C02" d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+      </svg>
+      <div>
+        <div class="strava-cta-name">Chenghao Yang</div>
+        <div class="strava-cta-tag">Snowboarder &middot; Vancouver, BC</div>
+      </div>
+    </div>
+    <a href="https://strava.app.link/7pAkjcVDi2b" target="_blank" rel="noopener" class="strava-cta-btn">Add me on Strava &#8594;</a>
+  </div>
+</div>
 
 <div class="section-rule"></div>
 <div class="wrap" id="contact">
