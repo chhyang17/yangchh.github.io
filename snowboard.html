@@ -555,19 +555,76 @@ nav {
 
 
     @media (max-width: 768px) {
+      /* Hero */
+      .hero-section { padding: 100px 24px 48px !important; }
+      .hero-section p { font-size: 15px !important; }
+
+      /* Nav */
       nav { padding: 0 16px; }
-      .strava-section { padding: 48px 24px 64px; }
+
+      /* Strava section */
+      .strava-section { padding: 32px 16px 48px; }
+      .strava-window-label { font-size: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+      /* Layout: map first on mobile, give it more space */
       .strava-layout {
         grid-template-columns: 1fr;
-        grid-template-rows: 320px 360px;
+        grid-template-rows: 420px auto;
         height: auto;
       }
-      .strava-panel { border-right: none; border-bottom: 1.5px solid var(--border); }
-      .strava-map-col { height: 360px; }
-      .map-bottom-bar { bottom: 18px; height: 30px; }
+      .strava-map-col { height: 420px; order: -1; }
+      .strava-panel {
+        border-right: none;
+        border-top: 1.5px solid var(--border);
+        border-bottom: none;
+        max-height: 360px;
+      }
+
+      /* Panel spacing */
+      .panel-header { padding: 14px 16px 10px; }
+      .activity-item { padding: 8px 16px; gap: 8px; }
+      .panel-status { padding: 6px 16px; }
+
+      /* Map overlays */
+      .map-info-bar { padding: 10px 14px; }
+      .map-metrics-card { top: 46px; left: 10px; padding: 8px 10px; min-width: 140px; }
+      .map-info-val { font-size: 13px; }
+      .map-bottom-bar { height: 30px; }
+      .layer-icon-btn { padding: 0 10px; height: 30px; }
       .tl-time { display: none; }
       .lgi-swatch { width: 44px; }
       .lgi-label { font-size: 7px; }
+
+      /* Footer & contact */
+      .wrap { padding: 48px 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section { padding: 88px 16px 36px !important; }
+      .hero-section h1 { margin-bottom: 16px !important; }
+
+      .strava-section { padding: 24px 8px 36px; }
+      .strava-window-label { display: none; }
+
+      .strava-layout {
+        grid-template-rows: 340px auto;
+        border-left: none;
+        border-right: none;
+      }
+      .strava-map-col { height: 340px; }
+      .strava-panel { max-height: 320px; }
+
+      .stat-val { font-size: 13px; }
+      .stat-lbl { font-size: 7px; }
+      .activity-name { font-size: 12px; }
+      .activity-speed { font-size: 11px; }
+
+      .map-metrics-card { min-width: 120px; padding: 6px 8px; }
+      .map-info-val { font-size: 11px; }
+      .map-legend-inline { display: none; }
+
+      .wrap { padding: 36px 16px; }
+      footer { padding: 16px; }
     }
 
   /* ─── FOOTER ─── */
@@ -633,7 +690,7 @@ footer {
 </nav>
 
   <!-- HERO SECTION -->
-  <div style="padding: 140px 56px 64px; border-bottom: 1px solid var(--border); max-width: 1200px; margin: 0 auto;">
+  <div class="hero-section" style="padding: 140px 56px 64px; border-bottom: 1px solid var(--border); max-width: 1200px; margin: 0 auto;">
     <div style="font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 16px;">Off-piste / Personal</div>
     <h1 style="font-family: var(--syne); font-size: clamp(32px,5vw,56px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px;">Riding the <span style="color: var(--accent);">Mountains</span></h1>
     <p style="font-size: 16px; color: var(--text-2); max-width: 640px; line-height: 1.8;">This is where I push both terrain and data to their limits. Every line here is both a ride and a dataset. GPS tracks are visualized as colour-coded speed heatmaps over topographic terrain, with vertical drop pulled live from Strava.</p>
