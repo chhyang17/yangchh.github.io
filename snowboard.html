@@ -777,8 +777,8 @@ footer {
   const map = new mapboxgl.Map({
     container: 'map',
     style: STYLES.dark,
-    center: [-122.9, 50.1],
-    zoom: 9, pitch: 55, bearing: -15, antialias: true,
+    center: [-123.1, 49.25],
+    zoom: 5, pitch: 52, bearing: -2, antialias: true,
     attributionControl: false   // we use compact attribution in the bar
   });
 
@@ -1013,7 +1013,7 @@ footer {
         (b, c) => b.extend(c),
         new mapboxgl.LngLatBounds(coords2d[0], coords2d[0])
       );
-      map.fitBounds(bounds, { padding: 60, pitch: 55, bearing: -15, maxZoom: 15, duration: 1200 });
+      map.fitBounds(bounds, { padding: 57, pitch: 55, bearing: -15, maxZoom: 15.75, duration: 1200 });
     }
   }
 
