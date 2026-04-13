@@ -564,7 +564,8 @@ nav {
 
       /* Strava section */
       .strava-section { padding: 32px 16px 48px; }
-      .strava-window-label { font-size: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .strava-window-label { font-size: 8px; }
+      .window-label-hint { display: none; }
 
       /* Layout: map first on mobile, give it more space */
       .strava-layout {
@@ -698,7 +699,7 @@ footer {
 
   <!-- STRAVA VIEWER SECTION -->
   <div class="strava-section">
-    <div class="strava-window-label"><span>//</span> Strava Live &mdash; Snowboard Sessions           •           Click Runs to View Data • Drag to Pan • Scroll to Zoom • Right-click to Rotate</div>
+    <div class="strava-window-label"><span>//</span> Strava Live &mdash; Snowboard Sessions<span class="window-label-hint">           •           Click Runs to View Data • Drag to Pan • Scroll to Zoom • Right-click to Rotate</span></div>
   <div class="strava-layout">
 
     <!-- LEFT: Activity panel -->
