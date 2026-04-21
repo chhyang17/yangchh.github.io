@@ -5,7 +5,7 @@ A personal portfolio website showcasing geospatial projects, spatial data workfl
 
 Built with a lightweight static HTML architecture and deployed through **GitHub Pages**.
 
-🔗 Live site: [https://yangchh17.github.io](https://yangchh17.github.io/yangchh.github.io)
+🔗 Live site: [https://yangchh.github.io](https://yangchh17.github.io/yangchh.github.io)
 
 ---
 
