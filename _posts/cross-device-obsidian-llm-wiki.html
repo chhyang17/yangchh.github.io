@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cross-Device, AI-Organized Notes — Chenghao Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg:        #ffffff;
+  --bg-off:    #f8f4ee;
+  --bg-muted:  #f1ebe0;
+  --border:    #e8e0d4;
+  --border-m:  #d8cfc0;
+  --accent:    #d44820;
+  --accent-2:  #c8880a;
+  --text:      #18120a;
+  --text-2:    #4a3828;
+  --text-3:    #9a8878;
+  --mono: 'DM Mono', monospace;
+  --syne: 'Syne', sans-serif;
+  --sans: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-weight: 300; line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px; background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .05em; text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+.nav-home {
+  font-family: var(--mono); font-size: 10px; color: var(--text-3);
+  letter-spacing: .14em; text-transform: uppercase; text-decoration: none;
+  transition: color .16s;
+}
+.nav-home:hover { color: var(--accent); }
+
+article { max-width: 720px; margin: 0 auto; padding: 140px 24px 100px; }
+.post-eyebrow {
+  font-family: var(--mono); font-size: 9px; color: var(--accent);
+  letter-spacing: .26em; text-transform: uppercase; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.post-eyebrow::after { content: ''; display: block; width: 32px; height: 1px; background: var(--accent); }
+h1.post-title {
+  font-family: var(--syne); font-weight: 800; font-size: clamp(32px, 5vw, 46px);
+  line-height: 1.08; letter-spacing: -.02em; color: var(--text); margin-bottom: 14px;
+}
+.post-meta { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: .05em; margin-bottom: 48px; }
+.post-lede { font-family: var(--syne); font-weight: 400; font-size: 17px; color: var(--text-2); line-height: 1.7; margin-bottom: 48px; padding-left: 18px; border-left: 2px solid var(--accent); }
+
+article h2 {
+  font-family: var(--syne); font-weight: 700; font-size: 22px; letter-spacing: -.01em;
+  color: var(--text); margin: 52px 0 18px;
+}
+article h3 {
+  font-family: var(--syne); font-weight: 700; font-size: 16px;
+  color: var(--text); margin: 32px 0 12px;
+}
+article p { font-size: 15px; color: var(--text-2); margin-bottom: 18px; }
+article ul, article ol { margin: 0 0 18px 22px; }
+article li { font-size: 15px; color: var(--text-2); margin-bottom: 8px; }
+article strong { color: var(--text); font-weight: 500; }
+article a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border-m); }
+article a:hover { border-bottom-color: var(--accent); }
+
+.callout {
+  background: var(--bg-off); border: 1px solid var(--border); border-left: 2px solid var(--accent);
+  padding: 18px 22px; margin: 24px 0; font-size: 14px; color: var(--text-2);
+}
+.callout strong { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+
+pre {
+  background: var(--text); color: #f1ebe0; font-family: var(--mono); font-size: 12.5px;
+  padding: 18px 20px; overflow-x: auto; margin: 20px 0; line-height: 1.6;
+}
+code { font-family: var(--mono); }
+p code, li code {
+  background: var(--bg-muted); color: var(--accent); font-size: 13px;
+  padding: 1px 6px; border: 1px solid var(--border);
+}
+
+.post-footer {
+  margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.back-link { font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+.back-link:hover { color: var(--accent); }
+
+footer.site-footer {
+  text-align: center; padding: 22px 56px; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 9px; color: var(--text-3); letter-spacing: .08em;
+}
+@media (max-width: 720px) {
+  nav { padding: 0 20px; }
+  article { padding: 120px 20px 80px; }
+}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">yang<span>.spatial</span></a>
+  <a href="../index.html" class="nav-home">Home</a>
+</nav>
+
+<article>
+  <div class="post-eyebrow">Posts &nbsp;&middot;&nbsp; Notes system</div>
+  <h1 class="post-title">Building a Cross-Device, AI-Organized Obsidian Note System</h1>
+  <div class="post-meta">August 17, 2026</div>
+
+  <p class="post-lede">
+    I wanted a note system that follows me across my work PC, home PC, and phone,
+    lets me write in a messy stream-of-consciousness style, and still ends up organized
+    &#8212; without me doing the organizing. Here's what I actually built, including the
+    mistakes along the way.
+  </p>
+
+  <h2>The goal</h2>
+  <ul>
+    <li>One Obsidian vault, edited from three devices (work laptop, home PC, phone)</li>
+    <li>Write raw, unstructured notes &#8212; todos, references, random thoughts, mixed languages</li>
+    <li>Let an LLM turn that mess into something structured and queryable later, instead of hand-filing everything into folders as I write</li>
+  </ul>
+
+  <h2>Part 1 &#8212; Syncing the vault with Syncthing</h2>
+  <p>
+    The sync layer is <a href="https://syncthing.net/" target="_blank">Syncthing</a> on the two
+    PCs, plus a Syncthing-compatible Android client on the phone, all pointed at the same folder
+    ID &#8212; which is the same folder Obsidian opens as its vault.
+  </p>
+
+  <h3>The mistake: same Folder ID &#8800; connected</h3>
+  <p>
+    Creating the folder with an identical Folder ID on all three devices doesn't sync them by
+    itself. A shared Folder ID only tells Syncthing "these are meant to be the same folder"
+    &#8212; two more things have to happen on top of that:
+  </p>
+  <ol>
+    <li><strong>Devices must be mutually added</strong> under "Remote Devices," with the connection accepted on both sides.</li>
+    <li><strong>The folder must be explicitly shared</strong> with each device, and the receiving device has to accept the share invitation that pops up.</li>
+  </ol>
+  <div class="callout">
+    <strong>Symptom to watch for</strong>
+    If a file's context menu says "this file is not fully available on any connected device,"
+    Syncthing has no peer to push to &#8212; check both steps above first.
+  </div>
+
+  <h3>Android gotcha: storage permissions</h3>
+  <p>
+    Scoped storage can silently limit Syncthing to its own app-private directory instead of the
+    public folder Obsidian actually writes to. If the folder looks connected but stays empty,
+    check the app has full storage access and that the path picked is the real vault path.
+  </p>
+
+  <h3>Excluding <code>.obsidian</code> from sync</h3>
+  <p>
+    Editing on two devices around the same time produced conflict files &#8212; not on notes
+    themselves, but on <code>.obsidian/core-plugins.json</code>, <code>workspace.json</code>, etc.
+    These are per-device app state, not content. Fix: add an ignore pattern per device, in each
+    folder's Syncthing settings:
+  </p>
+  <pre>.obsidian</pre>
+  <p>Ignore patterns are per-device, so this has to be added on each machine separately.</p>
+
+  <h2>Part 2 &#8212; Folder structure: less is more</h2>
+  <p>
+    I originally over-designed the vault with folders like <code>01-personal</code>,
+    <code>02-projects</code>, <code>03-todo</code>, <code>04-reference</code>,
+    <code>05-daily</code>. In practice that added friction to the "write raw" goal &#8212;
+    hesitating over where something belonged instead of just writing it down. Simplified to:
+  </p>
+  <pre>vault/
+&#9500;&#9472;&#9472; 00-inbox/        # everything goes here first
+&#9500;&#9472;&#9472; 04-reference/     # a small set of things worth keeping long-term
+&#9492;&#9472;&#9472; attachments/</pre>
+  <p>
+    Write daily, unsorted, mixed-language notes into <code>00-inbox</code>, and periodically
+    have an LLM re-organize the backlog rather than sorting by hand.
+  </p>
+
+  <h2>Part 3 &#8212; Getting an LLM to actually use the vault</h2>
+  <p>A few ways to connect an assistant to a local vault, trading off differently by client:</p>
+  <ul>
+    <li><strong>Claude Code</strong>, run from the vault directory, gets direct read/write access with zero config &#8212; good for hands-on editing sessions.</li>
+    <li><strong>Claude Desktop + a filesystem MCP connector</strong> works from a chat-style conversation, but desktop-only.</li>
+    <li><strong>An in-Obsidian plugin</strong> works everywhere Obsidian runs, including mobile, independent of which chat client is in use.</li>
+  </ul>
+  <p>
+    Since I use Claude across web, mobile, and desktop interchangeably, the missing piece was
+    specifically <em>detailed content I never typed into a chat, but did write into the
+    vault</em>. For that, an in-vault plugin made the most sense.
+  </p>
+
+  <h3>Karpathy LLM Wiki plugin</h3>
+  <p>
+    I went with the <a href="https://community.obsidian.md/plugins/karpathywiki" target="_blank">Karpathy
+    LLM Wiki plugin</a> &#8212; an implementation of
+    <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank">Andrej
+    Karpathy's "LLM wiki" idea</a>. It reads notes, has an LLM extract entities/concepts into
+    linked wiki pages, and retrieves via graph expansion (Personalized PageRank over the link
+    graph) rather than embeddings &#8212; no vector DB, no separate indexing pipeline.
+  </p>
+
+  <h3>Running it locally: two real bugs</h3>
+  <p><strong>1. Ollama models not showing up in the plugin, despite showing in Ollama's own GUI</strong></p>
+  <p>
+    A CORS issue, not a missing-model issue. The plugin runs inside Obsidian's app context
+    (<code>app://obsidian.md</code>) and calls Ollama's local API to list models &#8212; Ollama
+    only allows cross-origin requests from an explicit allowlist, and that origin isn't on it by
+    default.
+  </p>
+  <pre>OLLAMA_ORIGINS=app://obsidian.md*</pre>
+  <p>Set as an environment variable, then fully restart Ollama (the service, not just the tray icon, if installed as one).</p>
+
+  <p><strong>2. Raw model "thinking" text leaking into every response</strong></p>
+  <p>
+    Using a community-quantized GGUF (<code>hf.co/unsloth/gpt-oss-20b-GGUF</code>) pulled via
+    Ollama's HuggingFace integration, responses came back with internal reasoning mixed into
+    the output. <code>gpt-oss</code> models use OpenAI's "Harmony" format, separating an internal
+    <code>analysis</code> channel from the <code>final</code> channel via a specific chat
+    template &#8212; the official Ollama library build has it wired in correctly; some
+    independently-uploaded GGUFs don't. This wasn't just cosmetic: the plugin's extraction
+    depends on clean structured output, so the same bug was silently breaking ingestion too.
+  </p>
+  <pre>ollama pull gpt-oss:20b</pre>
+
+  <h2>Where it landed</h2>
+  <ul>
+    <li>Notes sync reliably across all three devices, with <code>.obsidian</code> excluded to stop config-file conflicts</li>
+    <li>The vault stays a flat, low-friction <code>inbox/</code> for daily writing</li>
+    <li>A fully-offline local LLM periodically turns that inbox into linked entity/concept pages I can query</li>
+    <li>Cross-language duplicate entities (e.g. "CRA" vs its Chinese name) are a known rough edge &#8212; the plugin's <strong>Lint wiki</strong> command is meant to catch and merge these</li>
+  </ul>
+
+  <h2>Takeaways</h2>
+  <ul>
+    <li>"Same Folder ID" in Syncthing is necessary but not sufficient &#8212; device trust <em>and</em> explicit folder sharing are separate steps people commonly miss</li>
+    <li>Exclude app config directories (<code>.obsidian</code>, <code>.git</code>, etc.) from file sync tools; they're per-device state, not content</li>
+    <li>If a local-model integration in an Electron-based app can't see your Ollama models, suspect CORS before anything else</li>
+    <li>For reasoning models like gpt-oss, prefer the inference tool's official model build over a community re-upload</li>
+  </ul>
+
+  <div class="post-footer">
+    <a href="../index.html" class="back-link">&#8592; Back to home</a>
+    <span class="post-meta" style="margin:0">Vancouver, BC</span>
+  </div>
+</article>
+
+<footer class="site-footer">&#169; 2026 Chenghao Yang &nbsp;&middot;&nbsp; Vancouver, BC &nbsp;&middot;&nbsp; Built with GitHub Pages</footer>
+
+</body>
+</html>
